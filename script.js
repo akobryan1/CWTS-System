@@ -1,4 +1,5 @@
-console.log("Script loaded successfully");
+console.log("Testing JavaScript");
+
 
 function toggleDashboard() {
     const dashboard = document.querySelector(".dashboard");
