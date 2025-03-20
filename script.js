@@ -59,41 +59,52 @@ const provider = new GoogleAuthProvider();
 // Google Sign-In Function
 // Google Sign-In Function with Faculty Verification
 async function loginWithGoogle() {
-    const provider = new GoogleAuthProvider();
-    
     try {
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: "select_account" });
+
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
-        console.log("✅ Login Successful:", user);
-        console.log("User Email:", user.email);
+        console.log("✅ Login Successful:", user.email);
 
         // Store user email in local storage
         localStorage.setItem("user_email", user.email);
 
         // Fetch faculty ID from Firestore
-        const facultyRef = doc(db, "faculty", user.email);
-        const facultySnap = await getDoc(facultyRef);
+        const facultyRef = collection(db, "faculty");
+        const q = query(facultyRef, where("gmail", "==", user.email));  
+        const querySnapshot = await getDocs(q);
 
-        if (!facultySnap.exists()) {
+        if (querySnapshot.empty) {
             alert("❌ Access Denied: Your email is not registered.");
             return;
         }
 
-        const facultyData = facultySnap.data();
-        alert(`✅ Login Successful! Your Faculty ID: ${facultyData.faculty_id}`);
+        let facultyId = null;
+        querySnapshot.forEach(doc => {
+            facultyId = doc.data().faculty_id;
+        });
+
+        if (!facultyId) {
+            alert("❌ Error: Faculty ID not found.");
+            return;
+        }
+
+        // Store faculty_id and email in localStorage
+        localStorage.setItem("faculty_id", facultyId);
+        localStorage.setItem("faculty_email", user.email);
+
+        alert(`✅ Login Successful! Faculty ID: ${facultyId}`);
 
         // ✅ Show buttons after login
-        document.getElementById("viewAttendanceButton").style.display = "block";
-        document.getElementById("classButton").style.display = "block";
-        document.getElementById("instructor-login-btn").style.display = "none";
-        document.getElementById("logout-btn").style.display = "block";
-
+        updateUIAfterLogin();
     } catch (error) {
-        console.error("❌ Google Sign-In Error:", error.message);
+        console.error("Google Sign-In Error:", error.message);
         alert("❌ Login failed. Please try again.");
     }
 }
+
 
 
 // Logout Function
