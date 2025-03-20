@@ -54,53 +54,39 @@ const provider = new GoogleAuthProvider();
 // Google Sign-In Function
 // Google Sign-In Function with Faculty Verification
 async function loginWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    
     try {
-        // Initialize Google Sign-In Provider
-        const provider = new GoogleAuthProvider();
-        provider.setCustomParameters({ prompt: "select_account" }); // Ensures account selection
-
-        // Attempt sign-in with a popup
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
-        if (!user || !user.email) {
-            alert("❌ Unable to retrieve email from Google.");
+        console.log("✅ Login Successful:", user);
+        console.log("User Email:", user.email);
+
+        // Store user email in local storage
+        localStorage.setItem("user_email", user.email);
+
+        // Fetch faculty ID from Firestore
+        const facultyRef = doc(db, "faculty", user.email);
+        const facultySnap = await getDoc(facultyRef);
+
+        if (!facultySnap.exists()) {
+            alert("❌ Access Denied: Your email is not registered.");
             return;
         }
 
-        console.log(`User Email: ${user.email}`);
+        const facultyData = facultySnap.data();
+        alert(`✅ Login Successful! Your Faculty ID: ${facultyData.faculty_id}`);
 
-        // Fetch faculty data from Firestore
-        const facultyRef = collection(db, "faculty");
-        const q = query(facultyRef, where("gmail", "==", user.email));  // 🔹 Changed "email" to "gmail"
-        const querySnapshot = await getDocs(q);
-
-        if (querySnapshot.empty) {
-            alert("❌ Access Denied: Your email is not registered as faculty.");
-            return;
-        }
-
-        // Extract faculty_id and store it
-        let facultyId = null;
-        querySnapshot.forEach(doc => {
-            facultyId = doc.data().faculty_id;
-        });
-
-        if (!facultyId) {
-            alert("❌ Error: Faculty ID not found.");
-            return;
-        }
-
-        // Store faculty_id and email in localStorage
-        localStorage.setItem("faculty_id", facultyId);
-        localStorage.setItem("faculty_email", user.email);
-
-        alert(`✅ Login successful! Faculty ID: ${facultyId}`);
-        window.location.reload();
+        // ✅ Show buttons after login
+        document.getElementById("viewAttendanceButton").style.display = "block";
+        document.getElementById("classButton").style.display = "block";
+        document.getElementById("instructor-login-btn").style.display = "none";
+        document.getElementById("logout-btn").style.display = "block";
 
     } catch (error) {
-        console.error("Google Sign-In Error:", error.message);
-        alert("❌ Google Sign-In failed. Check console for details.");
+        console.error("❌ Google Sign-In Error:", error.message);
+        alert("❌ Login failed. Please try again.");
     }
 }
 
@@ -108,24 +94,29 @@ async function loginWithGoogle() {
 // Logout Function
 // Improved Logout Function
 function logoutInstructor() {
-    const auth = getAuth();
+    localStorage.removeItem("user_email");
+    alert("✅ Logged out successfully!");
 
-    if (!auth.currentUser) {
-        alert("❌ No user is currently logged in.");
-        return;
-    }
+    // Hide buttons after logout
+    document.getElementById("viewAttendanceButton").style.display = "none";
+    document.getElementById("classButton").style.display = "none";
+    document.getElementById("instructor-login-btn").style.display = "block";
+    document.getElementById("logout-btn").style.display = "none";
 
-    signOut(auth).then(() => {
-        localStorage.removeItem("faculty_id");
-        localStorage.removeItem("faculty_email");
-
-        alert("✅ Successfully logged out.");
-        window.location.reload();
-    }).catch((error) => {
-        console.error("Logout Error:", error.message);
-        alert("❌ Logout failed. Please try again.");
-    });
+    window.location.reload();
 }
+
+window.onload = function() {
+    const userEmail = localStorage.getItem("user_email");
+    if (userEmail) {
+        document.getElementById("viewAttendanceButton").style.display = "block";
+        document.getElementById("classButton").style.display = "block";
+        document.getElementById("instructor-login-btn").style.display = "none";
+        document.getElementById("logout-btn").style.display = "block";
+    }
+};
+
+
 // Attach event listener to the login button
 document.getElementById("google-login-btn").addEventListener("click", loginWithGoogle);
 
