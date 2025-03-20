@@ -14,11 +14,25 @@ function closeInstructorLogin() {
     document.getElementById("instructor-login-popup").style.display = "none";
 }
 
+import { signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+// Logout Function
 function logoutInstructor() {
-    localStorage.removeItem("faculty_id");
-    alert("✅ Logged out successfully!");
-    window.location.reload();
+    const auth = getAuth();
+
+    signOut(auth).then(() => {
+        // Clear stored user data
+        localStorage.removeItem("faculty_id");
+        localStorage.removeItem("faculty_email");
+
+        alert("✅ Successfully logged out.");
+        window.location.reload();
+    }).catch((error) => {
+        console.error("Logout Error:", error.message);
+        alert("❌ Logout failed. Please try again.");
+    });
 }
+
 
 
 function resetLoginForm() {
