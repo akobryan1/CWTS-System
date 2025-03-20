@@ -17,11 +17,16 @@ function closeInstructorLogin() {
 import { signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
 // Logout Function
+// Improved Logout Function
 function logoutInstructor() {
     const auth = getAuth();
 
+    if (!auth.currentUser) {
+        alert("❌ No user is currently logged in.");
+        return;
+    }
+
     signOut(auth).then(() => {
-        // Clear stored user data
         localStorage.removeItem("faculty_id");
         localStorage.removeItem("faculty_email");
 
@@ -32,6 +37,7 @@ function logoutInstructor() {
         alert("❌ Logout failed. Please try again.");
     });
 }
+
 
 
 
@@ -70,6 +76,7 @@ const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
 // Google Sign-In Function
+// Google Sign-In Function with Faculty Verification
 async function loginWithGoogle() {
     try {
         const result = await signInWithPopup(auth, provider);
@@ -80,13 +87,13 @@ async function loginWithGoogle() {
             return;
         }
 
-        // Check if the user exists in Firestore
+        // Fetch faculty data from Firestore
         const facultyRef = collection(db, "faculty");
-        const q = query(facultyRef, where("email", "==", user.email));
+        const q = query(facultyRef, where("gmail", "==", user.email));  // 🔹 Changed "email" to "gmail"
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
-            alert("❌ Access Denied: Your email is not registered.");
+            alert("❌ Access Denied: Your email is not registered as faculty.");
             return;
         }
 
@@ -101,7 +108,7 @@ async function loginWithGoogle() {
             return;
         }
 
-        // Store faculty_id in localStorage
+        // Store faculty_id and email in localStorage
         localStorage.setItem("faculty_id", facultyId);
         localStorage.setItem("faculty_email", user.email);
 
@@ -110,9 +117,10 @@ async function loginWithGoogle() {
 
     } catch (error) {
         console.error("Google Sign-In Error:", error.message);
-        alert("❌ Google Sign-In failed.");
+        alert("❌ Google Sign-In failed. Check console for details.");
     }
 }
+
 
 // Attach event listener to the login button
 document.getElementById("google-login-btn").addEventListener("click", loginWithGoogle);
