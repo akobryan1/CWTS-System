@@ -125,6 +125,8 @@ window.toggleDashboard = function () {
 
 
 
+
+// Ensure Scripts Run After DOM Loads
 // Ensure Scripts Run After DOM Loads
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ JavaScript Loaded Successfully!");
@@ -144,4 +146,5 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         console.error("❌ Dashboard button not found!");
     }
-}
+});
+
