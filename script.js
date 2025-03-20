@@ -21,7 +21,7 @@ const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
 // Google Sign-In Function with Faculty Verification
-async function loginWithGoogle() {
+window.loginWithGoogle = async function() {
     try {
         provider.setCustomParameters({ prompt: "select_account" });
 
@@ -65,7 +65,8 @@ async function loginWithGoogle() {
         console.error("Google Sign-In Error:", error.message);
         alert("❌ Login failed. Please try again.");
     }
-}
+};
+
 
 // Logout Function
 async function logoutInstructor() {
