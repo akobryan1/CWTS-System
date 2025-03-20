@@ -21,7 +21,7 @@ const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
 // Google Sign-In Function with Faculty Verification
-window.loginWithGoogle = async function() {
+async function loginWithGoogle() {
     try {
         provider.setCustomParameters({ prompt: "select_account" });
 
@@ -113,7 +113,7 @@ function updateUIAfterLogout() {
 
 
 // Toggle Dashboard Collapse
-window.toggleDashboard = function () {
+function toggleDashboard() {
     const dashboard = document.querySelector(".dashboard");
     if (dashboard) {
         dashboard.classList.toggle("collapsed");
