@@ -16,30 +16,6 @@ function closeInstructorLogin() {
 
 import { signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
-// Logout Function
-// Improved Logout Function
-function logoutInstructor() {
-    const auth = getAuth();
-
-    if (!auth.currentUser) {
-        alert("❌ No user is currently logged in.");
-        return;
-    }
-
-    signOut(auth).then(() => {
-        localStorage.removeItem("faculty_id");
-        localStorage.removeItem("faculty_email");
-
-        alert("✅ Successfully logged out.");
-        window.location.reload();
-    }).catch((error) => {
-        console.error("Logout Error:", error.message);
-        alert("❌ Logout failed. Please try again.");
-    });
-}
-
-
-
 
 function resetLoginForm() {
     document.getElementById('login_faculty_id').value = '';
@@ -79,6 +55,11 @@ const provider = new GoogleAuthProvider();
 // Google Sign-In Function with Faculty Verification
 async function loginWithGoogle() {
     try {
+        // Initialize Google Sign-In Provider
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: "select_account" }); // Ensures account selection
+
+        // Attempt sign-in with a popup
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
@@ -86,6 +67,8 @@ async function loginWithGoogle() {
             alert("❌ Unable to retrieve email from Google.");
             return;
         }
+
+        console.log(`User Email: ${user.email}`);
 
         // Fetch faculty data from Firestore
         const facultyRef = collection(db, "faculty");
@@ -122,6 +105,27 @@ async function loginWithGoogle() {
 }
 
 
+// Logout Function
+// Improved Logout Function
+function logoutInstructor() {
+    const auth = getAuth();
+
+    if (!auth.currentUser) {
+        alert("❌ No user is currently logged in.");
+        return;
+    }
+
+    signOut(auth).then(() => {
+        localStorage.removeItem("faculty_id");
+        localStorage.removeItem("faculty_email");
+
+        alert("✅ Successfully logged out.");
+        window.location.reload();
+    }).catch((error) => {
+        console.error("Logout Error:", error.message);
+        alert("❌ Logout failed. Please try again.");
+    });
+}
 // Attach event listener to the login button
 document.getElementById("google-login-btn").addEventListener("click", loginWithGoogle);
 
