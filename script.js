@@ -113,14 +113,16 @@ function updateUIAfterLogout() {
 
 
 // Toggle Dashboard Collapse
-window.toggleDashboard = function() {
+window.toggleDashboard = function () {
     const dashboard = document.querySelector(".dashboard");
     if (dashboard) {
         dashboard.classList.toggle("collapsed");
+        console.log("✅ Dashboard Toggled");
     } else {
         console.error("❌ Dashboard element not found!");
     }
 };
+
 
 
 // Ensure Scripts Run After DOM Loads
