@@ -77,17 +77,19 @@ async function logoutInstructor() {
 
         alert("✅ Successfully logged out.");
 
-        // ✅ Ensure UI resets
+        // ✅ Reset UI
         updateUIAfterLogout();
 
+        // Refresh the page to clear the session
         setTimeout(() => {
             window.location.reload();
-        }, 500); // Ensures the UI updates before reload
+        }, 500);
     } catch (error) {
         console.error("Logout Error:", error.message);
         alert("❌ Logout failed. Please try again.");
     }
 }
+
 
 // UI Updates After Login
 function updateUIAfterLogin() {
