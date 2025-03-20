@@ -109,6 +109,14 @@ function updateUIAfterLogin() {
     }
 }
 
+function updateUIAfterLogout() {
+    document.getElementById("viewAttendanceButton").style.display = "none";
+    document.getElementById("classButton").style.display = "none";
+    document.getElementById("instructor-login-btn").style.display = "block";
+    document.getElementById("logout-btn").style.display = "none";
+}
+
+
 // ✅ Call this function when page loads
 window.onload = updateUIAfterLogin;
 
@@ -116,24 +124,29 @@ window.onload = updateUIAfterLogin;
 
 
 // Logout Function
-// Improved Logout Function
 import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
+// Improved Logout Function
 async function logoutInstructor() {
     const auth = getAuth();
 
     try {
-        await signOut(auth);
+        await signOut(auth); // ✅ Logs out the user from Firebase
         localStorage.removeItem("user_email");
         localStorage.removeItem("faculty_id");
 
         alert("✅ Successfully logged out.");
-        updateUIAfterLogin();
+
+        // ✅ Hide buttons after logout
+        updateUIAfterLogout();
+
+        window.location.reload(); // ✅ Ensures a fresh UI state after logout
     } catch (error) {
         console.error("Logout Error:", error.message);
         alert("❌ Logout failed. Please try again.");
     }
 }
+
 
 
 window.onload = function() {
@@ -163,5 +176,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Attach event listener to the login button
 document.getElementById("google-login-btn").addEventListener("click", loginWithGoogle);
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ JavaScript Loaded Successfully!");
+
+    // Ensure buttons update correctly
+    updateUIAfterLogin();
+
+    // ✅ Add event listener to logout button
+    const logoutBtn = document.getElementById("logout-btn");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", logoutInstructor);
+    }
+});
+
 
 
