@@ -1,31 +1,6 @@
-console.log("Testing JavaScript");
-
-
-function toggleDashboard() {
-    const dashboard = document.querySelector(".dashboard");
-    if (dashboard) {
-        dashboard.classList.toggle("collapsed");
-    } else {
-        console.error("❌ Dashboard element not found!");
-    }
-}
-
-
-function showInstructorLogin() {
-    document.getElementById("instructor-login-popup").style.display = "block";
-}
-
-function closeInstructorLogin() {
-    document.getElementById("instructor-login-popup").style.display = "none";
-}
-
-import { signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-
-console.log("Testing JavaScript");
-
 // Firebase SDK Imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
 // Firebase Configuration
@@ -45,11 +20,9 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-// Google Sign-In Function
 // Google Sign-In Function with Faculty Verification
 async function loginWithGoogle() {
     try {
-        const provider = new GoogleAuthProvider();
         provider.setCustomParameters({ prompt: "select_account" });
 
         const result = await signInWithPopup(auth, provider);
@@ -62,11 +35,11 @@ async function loginWithGoogle() {
 
         // Fetch faculty ID from Firestore
         const facultyRef = collection(db, "faculty");
-        const q = query(facultyRef, where("gmail", "==", user.email));  
+        const q = query(facultyRef, where("gmail", "==", user.email));
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
-            alert("❌ Access Denied: Your email is not registered.");
+            alert("❌ Access Denied: Your email is not registered as faculty.");
             return;
         }
 
@@ -94,6 +67,28 @@ async function loginWithGoogle() {
     }
 }
 
+// Logout Function
+async function logoutInstructor() {
+    try {
+        await signOut(auth);
+        localStorage.removeItem("user_email");
+        localStorage.removeItem("faculty_id");
+
+        alert("✅ Successfully logged out.");
+
+        // ✅ Ensure UI resets
+        updateUIAfterLogout();
+
+        setTimeout(() => {
+            window.location.reload();
+        }, 500); // Ensures the UI updates before reload
+    } catch (error) {
+        console.error("Logout Error:", error.message);
+        alert("❌ Logout failed. Please try again.");
+    }
+}
+
+// UI Updates After Login
 function updateUIAfterLogin() {
     const userEmail = localStorage.getItem("user_email");
     if (userEmail) {
@@ -102,13 +97,11 @@ function updateUIAfterLogin() {
         document.getElementById("instructor-login-btn").style.display = "none";
         document.getElementById("logout-btn").style.display = "block";
     } else {
-        document.getElementById("viewAttendanceButton").style.display = "none";
-        document.getElementById("classButton").style.display = "none";
-        document.getElementById("instructor-login-btn").style.display = "block";
-        document.getElementById("logout-btn").style.display = "none";
+        updateUIAfterLogout();
     }
 }
 
+// UI Updates After Logout
 function updateUIAfterLogout() {
     document.getElementById("viewAttendanceButton").style.display = "none";
     document.getElementById("classButton").style.display = "none";
@@ -116,78 +109,38 @@ function updateUIAfterLogout() {
     document.getElementById("logout-btn").style.display = "none";
 }
 
-
-
-
-// Logout Function
-import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-
-// Improved Logout Function
-async function logoutInstructor() {
-    const auth = getAuth();
-
-    try {
-        await signOut(auth); // ✅ Logs out the user from Firebase
-        localStorage.removeItem("user_email");
-        localStorage.removeItem("faculty_id");
-
-        alert("✅ Successfully logged out.");
-
-        // ✅ Hide buttons after logout
-        updateUIAfterLogout();
-
-        window.location.reload(); // ✅ Ensures a fresh UI state after logout
-    } catch (error) {
-        console.error("Logout Error:", error.message);
-        alert("❌ Logout failed. Please try again.");
+// Toggle Dashboard Collapse
+function toggleDashboard() {
+    const dashboard = document.querySelector(".dashboard");
+    if (dashboard) {
+        dashboard.classList.toggle("collapsed");
+    } else {
+        console.error("❌ Dashboard element not found!");
     }
 }
 
-
-
-window.onload = function() {
+// Ensure Scripts Run After DOM Loads
+document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ JavaScript Loaded Successfully!");
 
-    // Check if user is logged in and update UI
+    // Ensure buttons update correctly based on login status
     updateUIAfterLogin();
 
-    // Ensure the logout button works
+    // Ensure logout button works
     const logoutBtn = document.getElementById("logout-btn");
     if (logoutBtn) {
         logoutBtn.addEventListener("click", logoutInstructor);
     }
-};
 
+    // Ensure login button works
+    const loginBtn = document.getElementById("google-login-btn");
+    if (loginBtn) {
+        loginBtn.addEventListener("click", loginWithGoogle);
+    }
 
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ JavaScript Loaded Successfully!");
-
-    // Auto-show buttons if user is logged in
-    const userEmail = localStorage.getItem("user_email");
-    if (userEmail) {
-        document.getElementById("viewAttendanceButton").style.display = "block";
-        document.getElementById("classButton").style.display = "block";
-        document.getElementById("instructor-login-btn").style.display = "none";
-        document.getElementById("logout-btn").style.display = "block";
+    // Ensure dashboard toggle button works
+    const dashboardToggle = document.querySelector(".toggle-btn");
+    if (dashboardToggle) {
+        dashboardToggle.addEventListener("click", toggleDashboard);
     }
 });
-
-
-
-// Attach event listener to the login button
-document.getElementById("google-login-btn").addEventListener("click", loginWithGoogle);
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ JavaScript Loaded Successfully!");
-
-    // Ensure buttons update correctly
-    updateUIAfterLogin();
-
-    // ✅ Add event listener to logout button
-    const logoutBtn = document.getElementById("logout-btn");
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", logoutInstructor);
-    }
-});
-
-
-
