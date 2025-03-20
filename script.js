@@ -141,4 +141,4 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         console.error("❌ Dashboard button not found!");
     }
-};
+});
