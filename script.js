@@ -142,10 +142,27 @@ function updateUIAfterLogin() {
 
 // UI Updates After Logout
 function updateUIAfterLogout() {
-    document.getElementById("viewAttendanceButton").style.display = "none";
-    document.getElementById("classButton").style.display = "none";
-    document.getElementById("instructor-login-btn").style.display = "block";
-    document.getElementById("logout-btn").style.display = "none";
+    const buttonsToHide = [
+        "students-btn",
+        "faculty-btn",
+        "attendance-btn",
+        "register-student-btn",
+        "signup-faculty-btn",
+        "logout-btn",
+        "viewAttendanceButton",
+        "classButton"
+    ];
+
+    buttonsToHide.forEach(id => {
+        const button = document.getElementById(id);
+        if (button) button.style.display = "none";
+    });
+
+    // Show the login button after logout
+    const loginBtn = document.getElementById("google-login-btn");
+    if (loginBtn) loginBtn.style.display = "block";
+
+    console.log("✅ UI reset after logout");
 }
 
 
