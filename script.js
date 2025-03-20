@@ -90,7 +90,7 @@ async function logoutInstructor() {
         alert("❌ Logout failed. Please try again.");
     }
 }
-window.logoutInstructor = logoutInstructor;
+
 
 
 
@@ -202,3 +202,4 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("❌ Dashboard button not found!");
     }
 });
+window.logoutInstructor = logoutInstructor;
