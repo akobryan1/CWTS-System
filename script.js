@@ -117,10 +117,6 @@ function updateUIAfterLogout() {
 }
 
 
-// ✅ Call this function when page loads
-window.onload = updateUIAfterLogin;
-
-
 
 
 // Logout Function
@@ -150,14 +146,18 @@ async function logoutInstructor() {
 
 
 window.onload = function() {
-    const userEmail = localStorage.getItem("user_email");
-    if (userEmail) {
-        document.getElementById("viewAttendanceButton").style.display = "block";
-        document.getElementById("classButton").style.display = "block";
-        document.getElementById("instructor-login-btn").style.display = "none";
-        document.getElementById("logout-btn").style.display = "block";
+    console.log("✅ JavaScript Loaded Successfully!");
+
+    // Check if user is logged in and update UI
+    updateUIAfterLogin();
+
+    // Ensure the logout button works
+    const logoutBtn = document.getElementById("logout-btn");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", logoutInstructor);
     }
 };
+
 
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ JavaScript Loaded Successfully!");
