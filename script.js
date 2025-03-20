@@ -148,3 +148,4 @@ document.addEventListener("DOMContentLoaded", function () {
         dashboardToggle.addEventListener("click", toggleDashboard);
     }
 });
+}
