@@ -16,9 +16,9 @@ body {
 }
 
 .dashboard.collapsed {
-    width: 60px;
-    padding: 20px 5px;
+    display: none;
 }
+
 
 .dashboard.collapsed h2,
 .dashboard.collapsed button {
