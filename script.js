@@ -3,8 +3,13 @@ console.log("Testing JavaScript");
 
 function toggleDashboard() {
     const dashboard = document.querySelector(".dashboard");
-    dashboard.classList.toggle("collapsed");
+    if (dashboard) {
+        dashboard.classList.toggle("collapsed");
+    } else {
+        console.error("❌ Dashboard element not found!");
+    }
 }
+
 
 function showInstructorLogin() {
     document.getElementById("instructor-login-popup").style.display = "block";
@@ -115,6 +120,20 @@ window.onload = function() {
         document.getElementById("logout-btn").style.display = "block";
     }
 };
+
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ JavaScript Loaded Successfully!");
+
+    // Auto-show buttons if user is logged in
+    const userEmail = localStorage.getItem("user_email");
+    if (userEmail) {
+        document.getElementById("viewAttendanceButton").style.display = "block";
+        document.getElementById("classButton").style.display = "block";
+        document.getElementById("instructor-login-btn").style.display = "none";
+        document.getElementById("logout-btn").style.display = "block";
+    }
+});
+
 
 
 // Attach event listener to the login button
