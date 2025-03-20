@@ -105,6 +105,25 @@ async function loginWithGoogle() {
     }
 }
 
+function updateUIAfterLogin() {
+    const userEmail = localStorage.getItem("user_email");
+    if (userEmail) {
+        document.getElementById("viewAttendanceButton").style.display = "block";
+        document.getElementById("classButton").style.display = "block";
+        document.getElementById("instructor-login-btn").style.display = "none";
+        document.getElementById("logout-btn").style.display = "block";
+    } else {
+        document.getElementById("viewAttendanceButton").style.display = "none";
+        document.getElementById("classButton").style.display = "none";
+        document.getElementById("instructor-login-btn").style.display = "block";
+        document.getElementById("logout-btn").style.display = "none";
+    }
+}
+
+// ✅ Call this function when page loads
+window.onload = updateUIAfterLogin;
+
+
 
 
 // Logout Function
