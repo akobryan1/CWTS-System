@@ -52,3 +52,38 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+async function loginInstructor() {
+    const facultyId = document.getElementById("login_faculty_id").value.trim();
+    const password = document.getElementById("login_password").value.trim();
+
+    if (!facultyId || !password) {
+        alert("❌ Faculty ID and password are required.");
+        return;
+    }
+
+    try {
+        // Get faculty data from Firestore
+        const facultyRef = doc(db, "faculty", facultyId);
+        const facultySnap = await getDoc(facultyRef);
+
+        if (!facultySnap.exists()) {
+            alert("❌ Incorrect Faculty ID or password.");
+            return;
+        }
+
+        const facultyData = facultySnap.data();
+
+        // Authenticate using Firebase Auth
+        await signInWithEmailAndPassword(auth, facultyData.email, password);
+        
+        // Store faculty ID in localStorage
+        localStorage.setItem("faculty_id", facultyId);
+
+        alert("✅ Login successful!");
+        window.location.reload();
+    } catch (error) {
+        console.error("Login Error:", error.message);
+        alert("❌ Incorrect Faculty ID or password.");
+    }
+}
+
