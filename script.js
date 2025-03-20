@@ -125,24 +125,6 @@ function updateUIAfterLogin() {
     }
 }
 
-/*function updateUIAfterLogin() {
-    const userEmail = localStorage.getItem("user_email");
-
-    if (userEmail) {
-        const viewAttendanceButton = document.getElementById("viewAttendanceButton");
-        const classButton = document.getElementById("classButton");
-        const logoutBtn = document.getElementById("logout-btn");
-
-        if (viewAttendanceButton) viewAttendanceButton.style.display = "block";
-        if (classButton) classButton.style.display = "block";
-        if (logoutBtn) logoutBtn.style.display = "block";
-
-        console.log("✅ UI updated after login");
-    } else {
-        updateUIAfterLogout();
-    }
-}*/
-
 
 
 // UI Updates After Logout
@@ -202,4 +184,58 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("❌ Dashboard button not found!");
     }
 });
+
+// Function to open the Student Registration pop-up
+function openStudentForm() {
+    document.getElementById("student-form-popup").style.display = "block";
+}
+
+// Function to close the Student Registration pop-up
+function closeStudentForm() {
+    document.getElementById("student-form-popup").style.display = "none";
+}
+
+async function submitStudent() {
+    // Get form input values
+    const studentId = document.getElementById("student_id").value.trim();
+    const rfid = document.getElementById("rfid_card").value.trim();
+    const firstName = document.getElementById("first_name").value.trim();
+    const lastName = document.getElementById("last_name").value.trim();
+    const facultyId = document.getElementById("faculty_id").value.trim();
+
+    // Validate inputs (Ensure fields are not empty)
+    if (!studentId || !rfid || !firstName || !lastName || !facultyId) {
+        alert("❌ All fields must be filled out!");
+        return;
+    }
+
+    try {
+        // Reference Firestore "students" collection
+        const studentsRef = collection(db, "students");
+
+        // Add new student document to Firestore
+        await addDoc(studentsRef, {
+            student_id: parseInt(studentId),
+            rfid: parseInt(rfid),
+            first_name: firstName,
+            last_name: lastName,
+            faculty_id: facultyId
+        });
+
+        alert("✅ Student Registered Successfully!");
+
+        // Close the form and reset fields
+        closeStudentForm();
+        document.getElementById("student_id").value = "";
+        document.getElementById("rfid_card").value = "";
+        document.getElementById("first_name").value = "";
+        document.getElementById("last_name").value = "";
+        document.getElementById("faculty_id").value = "";
+    } catch (error) {
+        console.error("❌ Error adding student:", error);
+        alert("❌ Failed to register student. Please try again.");
+    }
+}
+
+
 window.logoutInstructor = logoutInstructor;
