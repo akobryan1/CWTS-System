@@ -92,15 +92,22 @@ async function logoutInstructor() {
 // UI Updates After Login
 function updateUIAfterLogin() {
     const userEmail = localStorage.getItem("user_email");
+
     if (userEmail) {
-        document.getElementById("viewAttendanceButton").style.display = "block";
-        document.getElementById("classButton").style.display = "block";
-        document.getElementById("instructor-login-btn").style.display = "none";
-        document.getElementById("logout-btn").style.display = "block";
+        const viewAttendanceButton = document.getElementById("viewAttendanceButton");
+        const classButton = document.getElementById("classButton");
+        const logoutBtn = document.getElementById("logout-btn");
+
+        if (viewAttendanceButton) viewAttendanceButton.style.display = "block";
+        if (classButton) classButton.style.display = "block";
+        if (logoutBtn) logoutBtn.style.display = "block";
+
+        console.log("✅ UI updated after login");
     } else {
-        updateUIAfterLogout(); // Ensure buttons hide properly
+        updateUIAfterLogout();
     }
 }
+
 
 
 // UI Updates After Logout
