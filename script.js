@@ -94,6 +94,36 @@ function updateUIAfterLogin() {
     const userEmail = localStorage.getItem("user_email");
 
     if (userEmail) {
+        const buttonsToShow = [
+            "students-btn",
+            "faculty-btn",
+            "attendance-btn",
+            "register-student-btn",
+            "signup-faculty-btn",
+            "logout-btn",
+            "viewAttendanceButton",
+            "classButton"
+        ];
+
+        buttonsToShow.forEach(id => {
+            const button = document.getElementById(id);
+            if (button) button.style.display = "block";
+        });
+
+        // Hide the login button after login
+        const loginBtn = document.getElementById("google-login-btn");
+        if (loginBtn) loginBtn.style.display = "none";
+
+        console.log("✅ UI updated after login");
+    } else {
+        updateUIAfterLogout();
+    }
+}
+
+/*function updateUIAfterLogin() {
+    const userEmail = localStorage.getItem("user_email");
+
+    if (userEmail) {
         const viewAttendanceButton = document.getElementById("viewAttendanceButton");
         const classButton = document.getElementById("classButton");
         const logoutBtn = document.getElementById("logout-btn");
@@ -106,7 +136,7 @@ function updateUIAfterLogin() {
     } else {
         updateUIAfterLogout();
     }
-}
+}*/
 
 
 
