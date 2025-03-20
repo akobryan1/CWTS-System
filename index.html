@@ -23,6 +23,34 @@
             <button id="google-login-btn" onclick="loginWithGoogle()">Sign in with Google</button>
             <button id="logout-btn" onclick="logoutInstructor()" style="display: none;">Logout</button>
 
+<!-- Student Registration Pop-up Form -->
+<div id="student-form-popup" class="popup-form" style="display: none;">
+    <div class="popup-content">
+        <h2>Register a Student</h2>
+
+        <label for="student_id">Student ID:</label>
+        <input type="text" id="student_id" required oninput="enforceNumericInput(event)">
+
+        <label for="rfid_card">RFID Card:</label>
+        <input type="text" id="rfid_card" required>
+
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" required>
+
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" required>
+
+        <label for="faculty_id">Instructor (Faculty ID):</label>
+        <input type="text" id="faculty_id" required oninput="enforceNumericInput(event)">
+
+        <div class="form-buttons">
+            <button onclick="submitStudent()">Add</button>
+            <button onclick="closeStudentForm()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+
             
 
 
