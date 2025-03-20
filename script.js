@@ -69,6 +69,7 @@ async function loginWithGoogle() {
 
 
 // Logout Function
+// Logout Function
 async function logoutInstructor() {
     try {
         await signOut(auth);
@@ -89,6 +90,8 @@ async function logoutInstructor() {
         alert("❌ Logout failed. Please try again.");
     }
 }
+window.logoutInstructor = logoutInstructor;
+
 
 
 // UI Updates After Login
