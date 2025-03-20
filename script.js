@@ -130,13 +130,12 @@ window.onload = updateUIAfterLogin;
 // Improved Logout Function
 function logoutInstructor() {
     localStorage.removeItem("user_email");
+    localStorage.removeItem("faculty_id");
+
     alert("✅ Logged out successfully!");
 
-    // Hide buttons after logout
-    document.getElementById("viewAttendanceButton").style.display = "none";
-    document.getElementById("classButton").style.display = "none";
-    document.getElementById("instructor-login-btn").style.display = "block";
-    document.getElementById("logout-btn").style.display = "none";
+    // ✅ Hide buttons after logout
+    updateUIAfterLogin();
 
     window.location.reload();
 }
