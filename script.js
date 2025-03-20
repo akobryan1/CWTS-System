@@ -97,9 +97,10 @@ function updateUIAfterLogin() {
         document.getElementById("instructor-login-btn").style.display = "none";
         document.getElementById("logout-btn").style.display = "block";
     } else {
-        updateUIAfterLogout();
+        updateUIAfterLogout(); // Ensure buttons hide properly
     }
 }
+
 
 // UI Updates After Logout
 function updateUIAfterLogout() {
@@ -108,6 +109,7 @@ function updateUIAfterLogout() {
     document.getElementById("instructor-login-btn").style.display = "block";
     document.getElementById("logout-btn").style.display = "none";
 }
+
 
 // Toggle Dashboard Collapse
 function toggleDashboard() {
@@ -123,14 +125,16 @@ function toggleDashboard() {
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ JavaScript Loaded Successfully!");
 
-    // Ensure buttons update correctly based on login status
-    updateUIAfterLogin();
-
-    // Ensure logout button works
-    const logoutBtn = document.getElementById("logout-btn");
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", logoutInstructor);
+    // Ensure dashboard toggle button works
+    const dashboardToggle = document.querySelector(".toggle-btn");
+    if (dashboardToggle) {
+        dashboardToggle.addEventListener("click", toggleDashboard);
+    } else {
+        console.error("❌ Dashboard button not found!");
     }
+});
+
+
 
     // Ensure login button works
     const loginBtn = document.getElementById("google-login-btn");
