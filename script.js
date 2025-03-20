@@ -125,6 +125,14 @@ function toggleDashboard() {
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ JavaScript Loaded Successfully!");
 
+    // Ensure login button works
+    const loginBtn = document.getElementById("google-login-btn");
+    if (loginBtn) {
+        loginBtn.addEventListener("click", loginWithGoogle);
+    } else {
+        console.error("❌ Login button not found!");
+    }
+
     // Ensure dashboard toggle button works
     const dashboardToggle = document.querySelector(".toggle-btn");
     if (dashboardToggle) {
@@ -132,19 +140,4 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         console.error("❌ Dashboard button not found!");
     }
-});
-
-
-
-    // Ensure login button works
-    const loginBtn = document.getElementById("google-login-btn");
-    if (loginBtn) {
-        loginBtn.addEventListener("click", loginWithGoogle);
-    }
-
-    // Ensure dashboard toggle button works
-    const dashboardToggle = document.querySelector(".toggle-btn");
-    if (dashboardToggle) {
-        dashboardToggle.addEventListener("click", toggleDashboard);
-    }
-});
+};
