@@ -21,17 +21,6 @@ function closeInstructorLogin() {
 
 import { signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
-
-function resetLoginForm() {
-    document.getElementById('login_faculty_id').value = '';
-    document.getElementById('login_password').value = '';
-}
-
-function enforceNumericInput(event) {
-    let value = event.target.value;
-    event.target.value = value.replace(/\D/g, '');
-}
-
 console.log("Testing JavaScript");
 
 // Firebase SDK Imports
@@ -128,17 +117,24 @@ window.onload = updateUIAfterLogin;
 
 // Logout Function
 // Improved Logout Function
-function logoutInstructor() {
-    localStorage.removeItem("user_email");
-    localStorage.removeItem("faculty_id");
+import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
-    alert("✅ Logged out successfully!");
+async function logoutInstructor() {
+    const auth = getAuth();
 
-    // ✅ Hide buttons after logout
-    updateUIAfterLogin();
+    try {
+        await signOut(auth);
+        localStorage.removeItem("user_email");
+        localStorage.removeItem("faculty_id");
 
-    window.location.reload();
+        alert("✅ Successfully logged out.");
+        updateUIAfterLogin();
+    } catch (error) {
+        console.error("Logout Error:", error.message);
+        alert("❌ Logout failed. Please try again.");
+    }
 }
+
 
 window.onload = function() {
     const userEmail = localStorage.getItem("user_email");
