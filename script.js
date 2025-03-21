@@ -327,8 +327,10 @@ function renderTable(data) {
         return;
     }
 
+    // 🔥 Exclude the 'id' field from the column headers
+    const columns = Object.keys(data[0]).filter(col => col !== "id");
+
     // Render table header
-    const columns = Object.keys(data[0]);
     columns.forEach(col => {
         const th = document.createElement("th");
         th.textContent = col.toUpperCase();
@@ -338,14 +340,17 @@ function renderTable(data) {
     // Render table rows
     data.forEach(row => {
         const tr = document.createElement("tr");
+
         columns.forEach(col => {
             const td = document.createElement("td");
-            td.textContent = row[col];
+            td.textContent = row[col];  // ✅ Now excludes 'id'
             tr.appendChild(td);
         });
+
         body.appendChild(tr);
     });
 }
+
 
 function performSearch() {
     const query = document.getElementById("search-bar").value.toLowerCase();
