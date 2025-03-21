@@ -191,10 +191,14 @@ function openStudentForm() {
     document.getElementById("student-form-popup").style.display = "block";
 }
 
-// Function to close the Student Registration pop-up
 function closeStudentForm() {
     document.getElementById("student-form-popup").style.display = "none";
 }
+
+// ✅ Ensure functions are globally accessible
+window.openStudentForm = openStudentForm;
+window.closeStudentForm = closeStudentForm;
+
 
 async function submitStudent() {
     // Get form input values
