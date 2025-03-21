@@ -358,3 +358,20 @@ button {
     border-radius: 8px; /* Rounded buttons for better touch interaction */
 }
 
+/* 🔴 Style Delete buttons */
+#data-table .delete-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    margin-left: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#data-table .delete-btn:hover {
+    background-color: #c0392b;
+}
+
+
