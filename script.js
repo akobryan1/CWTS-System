@@ -1,8 +1,14 @@
 // Firebase SDK Imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-import { signInWithRedirect } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import {
+  getAuth,
+  signInWithPopup,
+  signInWithRedirect,
+  GoogleAuthProvider,
+  signOut
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
 
 
 // Firebase Configuration
