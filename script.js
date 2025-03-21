@@ -361,7 +361,6 @@ function renderTable(data) {
         return;
     }
 
-    // 🔥 Exclude the 'id' field from the column headers
     const columns = Object.keys(data[0]).filter(col => col !== "id");
 
     // Render table header
@@ -371,19 +370,32 @@ function renderTable(data) {
         header.appendChild(th);
     });
 
+    // Add action header
+    const actionTh = document.createElement("th");
+    actionTh.textContent = "Actions";
+    header.appendChild(actionTh);
+
     // Render table rows
     data.forEach(row => {
         const tr = document.createElement("tr");
 
         columns.forEach(col => {
             const td = document.createElement("td");
-            td.textContent = row[col];  // ✅ Now excludes 'id'
+            td.textContent = row[col];
             tr.appendChild(td);
         });
+
+        const actionTd = document.createElement("td");
+        const updateBtn = document.createElement("button");
+        updateBtn.textContent = "Update";
+        updateBtn.onclick = () => openUpdateForm(row.id, row);
+        actionTd.appendChild(updateBtn);
+        tr.appendChild(actionTd);
 
         body.appendChild(tr);
     });
 }
+
 
 
 function performSearch() {
@@ -396,7 +408,77 @@ function performSearch() {
     renderTable(filtered);
 }
 
+// 🔄 TRACK CURRENT DOCUMENT FOR UPDATE
+let currentUpdateDocId = null;
 
+// 🔁 Table schema definitions for each collection
+const tableSchemas = {
+    students: ["student_id", "rfid", "first_name", "last_name", "faculty_id"],
+    faculty: ["faculty_id", "gmail"],
+    attendance: ["attendance_id", "student_id", "reader_id", "status", "timestamp"]
+};
+
+function openUpdateForm(docId, data) {
+    currentUpdateDocId = docId;
+    const form = document.getElementById("update-form");
+    form.innerHTML = ""; // Clear existing form fields
+
+    const currentSchema = tableSchemas[currentTable];
+
+    currentSchema.forEach(field => {
+        const label = document.createElement("label");
+        label.setAttribute("for", `update_${field}`);
+        label.textContent = field.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.id = `update_${field}`;
+        input.name = field;
+        input.required = true;
+        input.value = data[field] || "";
+
+        form.appendChild(label);
+        form.appendChild(input);
+    });
+
+    document.getElementById("update-form-popup").style.display = "block";
+}
+
+function closeUpdateForm() {
+    currentUpdateDocId = null;
+    document.getElementById("update-form-popup").style.display = "none";
+}
+
+async function submitUpdate() {
+    if (!currentUpdateDocId || !currentTable) {
+        alert("Update failed: missing reference.");
+        return;
+    }
+
+    const form = document.getElementById("update-form");
+    const formData = new FormData(form);
+    const updateData = {};
+
+    for (let [key, value] of formData.entries()) {
+        updateData[key] = value.trim();
+    }
+
+    try {
+        const ref = doc(db, currentTable, currentUpdateDocId);
+        await updateDoc(ref, updateData);
+        alert("✅ Record updated successfully.");
+        closeUpdateForm();
+        fetchTable(currentTable); // Refresh data
+    } catch (error) {
+        console.error("❌ Update failed:", error);
+        alert("❌ Failed to update record. Check the console for details.");
+    }
+}
+
+
+window.openUpdateForm = openUpdateForm;
+window.closeUpdateForm = closeUpdateForm;
+window.submitUpdate = submitUpdate;
 window.setCurrentTable = setCurrentTable;
 window.fetchTable = fetchTable;
 window.performSearch = performSearch;
