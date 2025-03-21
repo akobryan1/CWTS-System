@@ -178,12 +178,11 @@ function updateUIAfterLogout() {
         if (button) button.style.display = "none";
     });
 
-    // ✅ Ensure the login button is always visible after logout
+    // ✅ Show Sign-In button
     const loginBtn = document.getElementById("google-login-btn");
     if (loginBtn) loginBtn.style.display = "block";
-
-    console.log("✅ UI reset after logout");
 }
+
 
 
 // Toggle Dashboard Collapse
@@ -200,6 +199,23 @@ function toggleDashboard() {
 // Ensure Scripts Run After DOM Loads
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ JavaScript Loaded Successfully!");
+
+    // 🔥 Immediately hide all protected dashboard buttons
+    const buttonsToHide = [
+        "students-btn",
+        "faculty-btn",
+        "attendance-btn",
+        "register-student-btn",
+        "signup-faculty-btn",
+        "logout-btn",
+        "viewAttendanceButton",
+        "classButton"
+    ];
+
+    buttonsToHide.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.style.display = "none";  // ✅ Instantly hide buttons
+    });
 
     // ✅ Check authentication state on page load
     auth.onAuthStateChanged(user => {
@@ -222,7 +238,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const dashboardToggle = document.querySelector(".toggle-btn");
     if (dashboardToggle) dashboardToggle.addEventListener("click", toggleDashboard);
 
-    // ✅ Bind table buttons (FIXED COLLECTION NAMES)
+    // ✅ Bind table buttons
     const studentBtn = document.getElementById("students-btn");
     if (studentBtn) studentBtn.addEventListener("click", () => {
         setCurrentTable("students");
@@ -241,10 +257,11 @@ document.addEventListener("DOMContentLoaded", function () {
         fetchTable("attendance");
     });
 
-    // ✅ Search Button (No Changes)
+    // ✅ Search Button
     const searchBtn = document.querySelector('.controls button');
     if (searchBtn) searchBtn.addEventListener("click", performSearch);
 });
+
 
 
 
