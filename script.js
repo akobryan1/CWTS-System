@@ -197,34 +197,38 @@ function toggleDashboard() {
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ JavaScript Loaded Successfully!");
 
+    // ✅ Google Login Button
     const loginBtn = document.getElementById("google-login-btn");
     if (loginBtn) loginBtn.addEventListener("click", loginWithGoogle);
 
+    // ✅ Dashboard Toggle
     const dashboardToggle = document.querySelector(".toggle-btn");
     if (dashboardToggle) dashboardToggle.addEventListener("click", toggleDashboard);
 
-    // 🔁 Bind table buttons programmatically
+    // ✅ Bind table buttons (FIXED COLLECTION NAMES)
     const studentBtn = document.getElementById("students-btn");
     if (studentBtn) studentBtn.addEventListener("click", () => {
-        setCurrentTable("students_table");
-        fetchTable("students_table");
+        setCurrentTable("students");  // 🔥 FIXED from "students_table"
+        fetchTable("students");       // 🔥 FIXED from "students_table"
     });
 
     const facultyBtn = document.getElementById("faculty-btn");
     if (facultyBtn) facultyBtn.addEventListener("click", () => {
-        setCurrentTable("faculty_table");
-        fetchTable("faculty_table");
+        setCurrentTable("faculty");  // 🔥 FIXED from "faculty_table"
+        fetchTable("faculty");       // 🔥 FIXED from "faculty_table"
     });
 
     const attendanceBtn = document.getElementById("attendance-btn");
     if (attendanceBtn) attendanceBtn.addEventListener("click", () => {
-        setCurrentTable("attendance_table");
-        fetchTable("attendance_table");
+        setCurrentTable("attendance");  // 🔥 FIXED from "attendance_table"
+        fetchTable("attendance");       // 🔥 FIXED from "attendance_table"
     });
 
+    // ✅ Search Button (No Changes)
     const searchBtn = document.querySelector('.controls button');
     if (searchBtn) searchBtn.addEventListener("click", performSearch);
 });
+
 
 
 // Function to open the Student Registration pop-up
@@ -302,7 +306,7 @@ async function fetchTable(collectionName) {
             data.push({ id: doc.id, ...doc.data() });
         });
 
-        allRows = data; // store for search
+        allRows = data; // Store for search functionality
         renderTable(data);
     } catch (error) {
         console.error("❌ Error fetching data:", error);
