@@ -123,6 +123,7 @@ async function logoutInstructor() {
 
 
 
+
 // UI Updates After Login
 function updateUIAfterLogin() {
     const userEmail = localStorage.getItem("user_email");
@@ -158,6 +159,9 @@ function updateUIAfterLogin() {
 
 // UI Updates After Logout
 function updateUIAfterLogout() {
+    console.log("🔒 User Logged Out: Hiding dashboard buttons");
+
+    // ✅ Hide all buttons except Sign In
     const buttonsToHide = [
         "students-btn",
         "faculty-btn",
@@ -174,7 +178,7 @@ function updateUIAfterLogout() {
         if (button) button.style.display = "none";
     });
 
-    // Show the login button after logout
+    // ✅ Ensure the login button is always visible after logout
     const loginBtn = document.getElementById("google-login-btn");
     if (loginBtn) loginBtn.style.display = "block";
 
@@ -197,9 +201,22 @@ function toggleDashboard() {
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ JavaScript Loaded Successfully!");
 
+    // ✅ Check authentication state on page load
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            updateUIAfterLogin();
+        } else {
+            updateUIAfterLogout();
+        }
+    });
+
     // ✅ Google Login Button
     const loginBtn = document.getElementById("google-login-btn");
     if (loginBtn) loginBtn.addEventListener("click", loginWithGoogle);
+
+    // ✅ Logout Button
+    const logoutBtn = document.getElementById("logout-btn");
+    if (logoutBtn) logoutBtn.addEventListener("click", logoutInstructor);
 
     // ✅ Dashboard Toggle
     const dashboardToggle = document.querySelector(".toggle-btn");
@@ -208,20 +225,20 @@ document.addEventListener("DOMContentLoaded", function () {
     // ✅ Bind table buttons (FIXED COLLECTION NAMES)
     const studentBtn = document.getElementById("students-btn");
     if (studentBtn) studentBtn.addEventListener("click", () => {
-        setCurrentTable("students");  // 🔥 FIXED from "students_table"
-        fetchTable("students");       // 🔥 FIXED from "students_table"
+        setCurrentTable("students");
+        fetchTable("students");
     });
 
     const facultyBtn = document.getElementById("faculty-btn");
     if (facultyBtn) facultyBtn.addEventListener("click", () => {
-        setCurrentTable("faculty");  // 🔥 FIXED from "faculty_table"
-        fetchTable("faculty");       // 🔥 FIXED from "faculty_table"
+        setCurrentTable("faculty");
+        fetchTable("faculty");
     });
 
     const attendanceBtn = document.getElementById("attendance-btn");
     if (attendanceBtn) attendanceBtn.addEventListener("click", () => {
-        setCurrentTable("attendance");  // 🔥 FIXED from "attendance_table"
-        fetchTable("attendance");       // 🔥 FIXED from "attendance_table"
+        setCurrentTable("attendance");
+        fetchTable("attendance");
     });
 
     // ✅ Search Button (No Changes)
