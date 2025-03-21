@@ -1,6 +1,7 @@
 // Firebase SDK Imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
 import {
   getAuth,
   signInWithPopup,
@@ -370,7 +371,7 @@ function renderTable(data) {
         header.appendChild(th);
     });
 
-    // Add action header
+    // Add "Actions" header
     const actionTh = document.createElement("th");
     actionTh.textContent = "Actions";
     header.appendChild(actionTh);
@@ -385,16 +386,27 @@ function renderTable(data) {
             tr.appendChild(td);
         });
 
+        // Actions (Update + Delete)
         const actionTd = document.createElement("td");
+
+        // 🔁 Update button
         const updateBtn = document.createElement("button");
         updateBtn.textContent = "Update";
         updateBtn.onclick = () => openUpdateForm(row.id, row);
         actionTd.appendChild(updateBtn);
-        tr.appendChild(actionTd);
 
+        // 🗑️ Delete button
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.style.marginLeft = "8px";
+        deleteBtn.onclick = () => deleteRecord(row.id);
+        actionTd.appendChild(deleteBtn);
+
+        tr.appendChild(actionTd);
         body.appendChild(tr);
     });
 }
+
 
 
 
@@ -475,7 +487,22 @@ async function submitUpdate() {
     }
 }
 
+async function deleteRecord(docId) {
+    if (!confirm("Are you sure you want to delete this record?")) return;
 
+    try {
+        const ref = doc(db, currentTable, docId);
+        await deleteDoc(ref);
+        alert("🗑️ Record deleted successfully.");
+        fetchTable(currentTable); // Refresh data
+    } catch (error) {
+        console.error("❌ Deletion failed:", error);
+        alert("❌ Failed to delete record. Check console for details.");
+    }
+}
+
+
+window.deleteRecord = deleteRecord;
 window.openUpdateForm = openUpdateForm;
 window.closeUpdateForm = closeUpdateForm;
 window.submitUpdate = submitUpdate;
