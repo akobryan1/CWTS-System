@@ -2,9 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-setLogLevel('debug');
-
+import { signInWithRedirect } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
 
 // Firebase Configuration
@@ -23,12 +21,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
-
-
-// Google Sign-In Function with Faculty Verification
-let isSigningIn = false;
-
-import { signInWithRedirect } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
 let isSigningIn = false;
 
