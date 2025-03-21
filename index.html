@@ -50,6 +50,32 @@
     </div>
 </div>
 
+<!-- 🔄 Update Student Pop-up Form -->
+<div id="update-form-popup" class="popup-form" style="display: none;">
+  <div class="popup-content">
+    <h2>Update Student</h2>
+
+    <label for="update_student_id">Student ID:</label>
+    <input type="text" id="update_student_id" disabled>
+
+    <label for="update_rfid_card">RFID Card:</label>
+    <input type="text" id="update_rfid_card" required>
+
+    <label for="update_first_name">First Name:</label>
+    <input type="text" id="update_first_name" required>
+
+    <label for="update_last_name">Last Name:</label>
+    <input type="text" id="update_last_name" required>
+
+    <label for="update_faculty_id">Instructor (Faculty ID):</label>
+    <input type="text" id="update_faculty_id" required>
+
+    <div class="form-buttons">
+      <button onclick="submitStudentUpdate()">Update</button>
+      <button onclick="closeUpdateForm()">Cancel</button>
+    </div>
+  </div>
+</div>
 
             
 
