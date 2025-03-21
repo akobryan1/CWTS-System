@@ -272,9 +272,78 @@ function enforceNumericInput(event) {
     input.value = input.value.replace(/\D/g, '');
 }
 
+let currentTable = ""; // holds the current collection name
+let allRows = [];       // holds the full dataset for searching
+
+function setCurrentTable(tableName) {
+    currentTable = tableName;
+}
+
+async function fetchTable(collectionName) {
+    try {
+        const ref = collection(db, collectionName);
+        const snapshot = await getDocs(ref);
+
+        const data = [];
+        snapshot.forEach(doc => {
+            data.push({ id: doc.id, ...doc.data() });
+        });
+
+        allRows = data; // store for search
+        renderTable(data);
+    } catch (error) {
+        console.error("❌ Error fetching data:", error);
+        alert("❌ Failed to fetch data.");
+    }
+}
+
+function renderTable(data) {
+    const header = document.getElementById("table-header");
+    const body = document.getElementById("table-body");
+
+    // Clear existing content
+    header.innerHTML = "";
+    body.innerHTML = "";
+
+    if (data.length === 0) {
+        header.innerHTML = "<th>No data available</th>";
+        return;
+    }
+
+    // Render table header
+    const columns = Object.keys(data[0]);
+    columns.forEach(col => {
+        const th = document.createElement("th");
+        th.textContent = col.toUpperCase();
+        header.appendChild(th);
+    });
+
+    // Render table rows
+    data.forEach(row => {
+        const tr = document.createElement("tr");
+        columns.forEach(col => {
+            const td = document.createElement("td");
+            td.textContent = row[col];
+            tr.appendChild(td);
+        });
+        body.appendChild(tr);
+    });
+}
+
+function performSearch() {
+    const query = document.getElementById("search-bar").value.toLowerCase();
+    const filtered = allRows.filter(row =>
+        Object.values(row).some(value =>
+            String(value).toLowerCase().includes(query)
+        )
+    );
+    renderTable(filtered);
+}
 
 
-
+window.setCurrentTable = setCurrentTable;
+window.fetchTable = fetchTable;
+window.performSearch = performSearch;
 window.submitStudent = submitStudent;
 window.enforceNumericInput = enforceNumericInput;
 window.logoutInstructor = logoutInstructor;
