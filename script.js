@@ -195,9 +195,6 @@ function closeStudentForm() {
     document.getElementById("student-form-popup").style.display = "none";
 }
 
-// ✅ Ensure functions are globally accessible
-window.openStudentForm = openStudentForm;
-window.closeStudentForm = closeStudentForm;
 
 
 async function submitStudent() {
@@ -244,3 +241,6 @@ async function submitStudent() {
 
 
 window.logoutInstructor = logoutInstructor;
+window.loginWithGoogle = loginWithGoogle;
+window.openStudentForm = openStudentForm;
+window.closeStudentForm = closeStudentForm;
