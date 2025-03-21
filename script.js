@@ -239,7 +239,16 @@ async function submitStudent() {
     }
 }
 
+function enforceNumericInput(event) {
+    const input = event.target;
+    input.value = input.value.replace(/\D/g, '');
+}
 
+
+
+
+window.submitStudent = submitStudent;
+window.enforceNumericInput = enforceNumericInput;
 window.logoutInstructor = logoutInstructor;
 window.loginWithGoogle = loginWithGoogle;
 window.openStudentForm = openStudentForm;
