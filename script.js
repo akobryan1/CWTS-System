@@ -306,7 +306,7 @@ async function fetchTable(collectionName) {
         renderTable(data);
     } catch (error) {
         console.error("❌ Error fetching data:", error);
-        alert("❌ Failed to fetch data.");
+        alert("❌ Failed to fetch data. Check Firestore rules and collection name.");
     }
 }
 
