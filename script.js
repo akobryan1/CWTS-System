@@ -197,22 +197,35 @@ function toggleDashboard() {
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ JavaScript Loaded Successfully!");
 
-    // ✅ Bind login button event listener
     const loginBtn = document.getElementById("google-login-btn");
-    if (loginBtn) {
-        loginBtn.addEventListener("click", loginWithGoogle);
-    } else {
-        console.error("❌ Login button not found!");
-    }
+    if (loginBtn) loginBtn.addEventListener("click", loginWithGoogle);
 
-    // ✅ Bind dashboard toggle button event listener
     const dashboardToggle = document.querySelector(".toggle-btn");
-    if (dashboardToggle) {
-        dashboardToggle.addEventListener("click", toggleDashboard);
-    } else {
-        console.error("❌ Dashboard button not found!");
-    }
+    if (dashboardToggle) dashboardToggle.addEventListener("click", toggleDashboard);
+
+    // 🔁 Bind table buttons programmatically
+    const studentBtn = document.getElementById("students-btn");
+    if (studentBtn) studentBtn.addEventListener("click", () => {
+        setCurrentTable("students_table");
+        fetchTable("students_table");
+    });
+
+    const facultyBtn = document.getElementById("faculty-btn");
+    if (facultyBtn) facultyBtn.addEventListener("click", () => {
+        setCurrentTable("faculty_table");
+        fetchTable("faculty_table");
+    });
+
+    const attendanceBtn = document.getElementById("attendance-btn");
+    if (attendanceBtn) attendanceBtn.addEventListener("click", () => {
+        setCurrentTable("attendance_table");
+        fetchTable("attendance_table");
+    });
+
+    const searchBtn = document.querySelector('.controls button');
+    if (searchBtn) searchBtn.addEventListener("click", performSearch);
 });
+
 
 // Function to open the Student Registration pop-up
 function openStudentForm() {
