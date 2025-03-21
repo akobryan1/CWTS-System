@@ -25,9 +25,11 @@ const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
 
-await signOut(auth); // just before signInWithPopup
-
 // Google Sign-In Function with Faculty Verification
+let isSigningIn = false;
+
+import { signInWithRedirect } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
 let isSigningIn = false;
 
 async function loginWithGoogle() {
@@ -37,13 +39,26 @@ async function loginWithGoogle() {
     try {
         provider.setCustomParameters({ prompt: "select_account" });
 
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
+        let user;
+        if (window.innerWidth < 600) {
+            // 🔄 Use redirect-based login on mobile
+            await signInWithRedirect(auth, provider);
+            return; // Redirect exits function, no need to continue
+        } else {
+            // 🔄 Use popup login for desktops
+            const result = await signInWithPopup(auth, provider);
+            user = result.user;
+        }
+
+        if (!user) {
+            throw new Error("User authentication failed.");
+        }
 
         console.log("✅ Login Successful:", user.email);
 
         localStorage.setItem("user_email", user.email);
 
+        // 🔎 Check if user is faculty
         const facultyRef = collection(db, "faculty");
         const q = query(facultyRef, where("gmail", "==", user.email));
         const querySnapshot = await getDocs(q);
@@ -71,15 +86,20 @@ async function loginWithGoogle() {
         alert(`✅ Login Successful! Faculty ID: ${facultyId}`);
         updateUIAfterLogin();
     } catch (error) {
-        console.error("Google Sign-In Error:", error.message);
-        alert("❌ Login failed. Please try again.");
+        console.error("❌ Google Sign-In Error:", error.message);
+
+        if (error.code === "auth/popup-blocked") {
+            alert("❌ Login failed: The popup was blocked. Enable popups.");
+        } else if (error.code === "auth/cancelled-popup-request") {
+            alert("❌ Login canceled. Try again.");
+        } else {
+            alert("❌ Login failed. Please try again.");
+        }
     } finally {
         isSigningIn = false;
     }
 }
 
-
-// Logout Function
 // Logout Function
 async function logoutInstructor() {
     try {
