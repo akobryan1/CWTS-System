@@ -2,6 +2,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+setLogLevel('debug');
+
 
 
 // Firebase Configuration
@@ -21,8 +24,16 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
+
+await signOut(auth); // just before signInWithPopup
+
 // Google Sign-In Function with Faculty Verification
+let isSigningIn = false;
+
 async function loginWithGoogle() {
+    if (isSigningIn) return;
+    isSigningIn = true;
+
     try {
         provider.setCustomParameters({ prompt: "select_account" });
 
@@ -31,16 +42,15 @@ async function loginWithGoogle() {
 
         console.log("✅ Login Successful:", user.email);
 
-        // Store user email in local storage
         localStorage.setItem("user_email", user.email);
 
-        // Fetch faculty ID from Firestore
         const facultyRef = collection(db, "faculty");
         const q = query(facultyRef, where("gmail", "==", user.email));
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
             alert("❌ Access Denied: Your email is not registered as faculty.");
+            isSigningIn = false;
             return;
         }
 
@@ -51,22 +61,22 @@ async function loginWithGoogle() {
 
         if (!facultyId) {
             alert("❌ Error: Faculty ID not found.");
+            isSigningIn = false;
             return;
         }
 
-        // Store faculty_id and email in localStorage
         localStorage.setItem("faculty_id", facultyId);
         localStorage.setItem("faculty_email", user.email);
 
         alert(`✅ Login Successful! Faculty ID: ${facultyId}`);
-
-        // ✅ Show buttons after login
         updateUIAfterLogin();
     } catch (error) {
         console.error("Google Sign-In Error:", error.message);
         alert("❌ Login failed. Please try again.");
+    } finally {
+        isSigningIn = false;
     }
-};
+}
 
 
 // Logout Function
