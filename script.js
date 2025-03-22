@@ -513,8 +513,12 @@ function toggleClass() {
     isClassOngoing = !isClassOngoing;
     classButton.textContent = isClassOngoing ? "End Class" : "Start Class";
 
+    // ✅ Prevent RFID Enter key from triggering this button again
+    classButton.blur();
+
     alert(`📘 Class ${isClassOngoing ? "started" : "ended"}.`);
 }
+
 
 async function handleRFIDScan(rfid) {
     if (!isClassOngoing) {
