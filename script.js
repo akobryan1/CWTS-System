@@ -606,6 +606,26 @@ document.addEventListener("keydown", function (e) {
     }
 });
 
+const latestQuery = query(attendanceRef, orderBy("attendance_id", "desc"), limit(1));
+const latestSnap = await getDocs(latestQuery);
+
+let nextId = 1;
+if (!latestSnap.empty) {
+    const last = latestSnap.docs[0].data();
+    nextId = parseInt(last.attendance_id) + 1;
+}
+
+// then save:
+await addDoc(attendanceRef, {
+    attendance_id: nextId,
+    student_id: studentData.student_id,
+    faculty_id: instructorFacultyId,
+    timestamp: new Date(),
+    status: "present",
+    reader_id: null
+});
+
+
 
 
 window.toggleClass = toggleClass;
