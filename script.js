@@ -30,6 +30,7 @@ const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
 let isSigningIn = false;
+let isClassOngoing = false;
 
 async function loginWithGoogle() {
     if (isSigningIn) return;
@@ -501,7 +502,80 @@ async function deleteRecord(docId) {
     }
 }
 
+function toggleClass() {
+    const classButton = document.getElementById("classButton");
 
+    isClassOngoing = !isClassOngoing;
+    classButton.textContent = isClassOngoing ? "End Class" : "Start Class";
+
+    alert(`📘 Class ${isClassOngoing ? "started" : "ended"}.`);
+}
+
+async function handleRFIDScan(rfid) {
+    if (!isClassOngoing) {
+        alert("❌ Class has not started.");
+        return;
+    }
+
+    try {
+        const studentsRef = collection(db, "students");
+        const q = query(studentsRef, where("rfid", "==", parseInt(rfid)));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+            alert("❌ RFID not registered to any student.");
+            return;
+        }
+
+        const studentDoc = querySnapshot.docs[0];
+        const studentData = studentDoc.data();
+
+        const instructorFacultyId = localStorage.getItem("faculty_id");
+
+        if (studentData.faculty_id !== instructorFacultyId) {
+            alert("❌ This student is not in your class.");
+            return;
+        }
+
+        // Check if student already recorded for today
+        const attendanceRef = collection(db, "attendance");
+        const today = new Date().toISOString().slice(0, 10); // yyyy-mm-dd
+
+        const existing = query(
+            attendanceRef,
+            where("student_id", "==", studentData.student_id),
+            where("faculty_id", "==", instructorFacultyId),
+            where("timestamp", ">=", new Date(`${today}T00:00:00`)),
+            where("timestamp", "<=", new Date(`${today}T23:59:59`))
+        );
+
+        const attendanceSnapshot = await getDocs(existing);
+
+        if (!attendanceSnapshot.empty) {
+            alert("❌ Student already recorded for today.");
+            return;
+        }
+
+        // Log attendance
+        await addDoc(attendanceRef, {
+            student_id: studentData.student_id,
+            faculty_id: instructorFacultyId,
+            timestamp: new Date(),
+            status: "present",
+            reader_id: null  // optional
+        });
+
+        alert(`✅ Attendance recorded for ${studentData.first_name} ${studentData.last_name}`);
+        fetchTable("attendance"); // refresh table if viewing attendance
+    } catch (err) {
+        console.error("❌ RFID handling error:", err);
+        alert("❌ An error occurred while processing RFID.");
+    }
+}
+
+
+window.toggleClass = toggleClass;
+window.handleRFIDScan = handleRFIDScan;
 window.deleteRecord = deleteRecord;
 window.openUpdateForm = openUpdateForm;
 window.closeUpdateForm = closeUpdateForm;
