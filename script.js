@@ -595,6 +595,22 @@ async function handleRFIDScan(rfid) {
     }
 }
 
+// ✅ RFID scan handler: build input, trigger on Enter
+document.addEventListener("keydown", function (e) {
+    const isInputActive = document.activeElement.tagName === "INPUT";
+    if (isInputActive) return;
+
+    if (!isClassOngoing) return;
+
+    if (e.key === "Enter") {
+        if (rfidBuffer.trim()) {
+            handleRFIDScan(rfidBuffer.trim());
+            rfidBuffer = "";
+        }
+    } else if (!isNaN(e.key)) {
+        rfidBuffer += e.key;
+    }
+});
 
 
 
