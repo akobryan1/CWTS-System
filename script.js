@@ -606,6 +606,7 @@ document.addEventListener("keydown", function (e) {
     }
 });
 
+
 const latestQuery = query(attendanceRef, orderBy("attendance_id", "desc"), limit(1));
 const latestSnap = await getDocs(latestQuery);
 
