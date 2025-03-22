@@ -528,6 +528,8 @@ async function handleRFIDScan(rfid) {
 
     try {
         const studentsRef = collection(db, "students");
+        console.log("🔍 Looking up RFID:", rfid);
+
         const q = query(studentsRef, where("rfid", "==", rfid));
         const querySnapshot = await getDocs(q);
 
