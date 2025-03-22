@@ -1,6 +1,19 @@
 // Firebase SDK Imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-import { getFirestore, collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
+  orderBy,      // ✅ add this
+  limit         // ✅ and this
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
 import {
   getAuth,
   signInWithPopup,
