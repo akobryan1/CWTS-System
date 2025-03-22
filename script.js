@@ -542,7 +542,6 @@ async function handleRFIDScan(rfid) {
             return;
         }
 
-        // Check if student already recorded for today
         const attendanceRef = collection(db, "attendance");
         const today = new Date().toISOString().slice(0, 10); // yyyy-mm-dd
 
@@ -561,42 +560,36 @@ async function handleRFIDScan(rfid) {
             return;
         }
 
-        // Log attendance
+        // 🔢 Determine the next attendance_id
+        const latestQuery = query(attendanceRef, orderBy("attendance_id", "desc"), limit(1));
+        const latestSnap = await getDocs(latestQuery);
+
+        let nextId = 1;
+        if (!latestSnap.empty) {
+            const last = latestSnap.docs[0].data();
+            nextId = parseInt(last.attendance_id) + 1;
+        }
+
+        // ✅ Log attendance
         await addDoc(attendanceRef, {
+            attendance_id: nextId,
+            reader_id: "1",
+            status: "present",
             student_id: studentData.student_id,
             faculty_id: instructorFacultyId,
-            timestamp: new Date(),
-            status: "present",
-            reader_id: null  // optional
+            timestamp: new Date()
         });
 
         alert(`✅ Attendance recorded for ${studentData.first_name} ${studentData.last_name}`);
-        fetchTable("attendance"); // refresh table if viewing attendance
+        if (currentTable === "attendance") {
+            fetchTable("attendance");
+        }
+
     } catch (err) {
         console.error("❌ RFID handling error:", err);
         alert("❌ An error occurred while processing RFID.");
     }
 }
-
-
-const latestQuery = query(attendanceRef, orderBy("attendance_id", "desc"), limit(1));
-const latestSnap = await getDocs(latestQuery);
-
-let nextId = 1;
-if (!latestSnap.empty) {
-    const last = latestSnap.docs[0].data();
-    nextId = parseInt(last.attendance_id) + 1;
-}
-
-// then save:
-await addDoc(attendanceRef, {
-    attendance_id: nextId,
-    student_id: studentData.student_id,
-    faculty_id: instructorFacultyId,
-    timestamp: new Date(),
-    status: "present",
-    reader_id: null
-});
 
 
 
