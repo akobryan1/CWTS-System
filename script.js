@@ -573,6 +573,40 @@ async function handleRFIDScan(rfid) {
     }
 }
 
+let rfidBuffer = "";
+
+document.addEventListener("keydown", function (e) {
+    if (!isClassOngoing) return;
+
+    // Trigger on Enter
+    if (e.key === "Enter") {
+        if (rfidBuffer.trim()) {
+            handleRFIDScan(rfidBuffer.trim());
+            rfidBuffer = ""; // reset
+        }
+    } else if (!isNaN(e.key)) {
+        // Append only numbers
+        rfidBuffer += e.key;
+    }
+});
+
+document.addEventListener("keydown", function (e) {
+    const isInputActive = document.activeElement.tagName === "INPUT";
+    if (isInputActive) return;
+
+    if (!isClassOngoing) return;
+
+    if (e.key === "Enter") {
+        if (rfidBuffer.trim()) {
+            handleRFIDScan(rfidBuffer.trim());
+            rfidBuffer = "";
+        }
+    } else if (!isNaN(e.key)) {
+        rfidBuffer += e.key;
+    }
+});
+
+
 
 window.toggleClass = toggleClass;
 window.handleRFIDScan = handleRFIDScan;
