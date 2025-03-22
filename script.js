@@ -31,6 +31,7 @@ const provider = new GoogleAuthProvider();
 
 let isSigningIn = false;
 let isClassOngoing = false;
+let rfidBuffer = "";
 
 async function loginWithGoogle() {
     if (isSigningIn) return;
@@ -201,6 +202,10 @@ function toggleDashboard() {
 // Ensure Scripts Run After DOM Loads
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ JavaScript Loaded Successfully!");
+
+  const classBtn = document.getElementById("classButton");
+if (classBtn) classBtn.addEventListener("click", toggleClass);
+
 
     // 🔥 Immediately hide all protected dashboard buttons
     const buttonsToHide = [
@@ -572,39 +577,6 @@ async function handleRFIDScan(rfid) {
         alert("❌ An error occurred while processing RFID.");
     }
 }
-
-let rfidBuffer = "";
-
-document.addEventListener("keydown", function (e) {
-    if (!isClassOngoing) return;
-
-    // Trigger on Enter
-    if (e.key === "Enter") {
-        if (rfidBuffer.trim()) {
-            handleRFIDScan(rfidBuffer.trim());
-            rfidBuffer = ""; // reset
-        }
-    } else if (!isNaN(e.key)) {
-        // Append only numbers
-        rfidBuffer += e.key;
-    }
-});
-
-document.addEventListener("keydown", function (e) {
-    const isInputActive = document.activeElement.tagName === "INPUT";
-    if (isInputActive) return;
-
-    if (!isClassOngoing) return;
-
-    if (e.key === "Enter") {
-        if (rfidBuffer.trim()) {
-            handleRFIDScan(rfidBuffer.trim());
-            rfidBuffer = "";
-        }
-    } else if (!isNaN(e.key)) {
-        rfidBuffer += e.key;
-    }
-});
 
 
 const latestQuery = query(attendanceRef, orderBy("attendance_id", "desc"), limit(1));
