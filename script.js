@@ -734,22 +734,22 @@ async function endClassAndArchive() {
 
 async function listArchivedSheets() {
     try {
-        const collections = await listCollections(db);
-        const archived = collections
-            .filter(col => col.id.startsWith("attendance_"))
-            .map(col => col.id);
+        const sheetsRef = collection(db, "attendance_sheets");
+        const snap = await getDocs(query(sheetsRef, orderBy("created_at", "desc")));
 
-        if (archived.length === 0) {
+        if (snap.empty) {
             alert("⚠️ No archived sheets found.");
             return;
         }
 
-        openArchivedSheetsPopup(archived);
+        const sheetNames = snap.docs.map(doc => doc.data().sheet_name);
+        openArchivedSheetsPopup(sheetNames);
     } catch (error) {
         console.error("❌ Error listing archived sheets:", error);
         alert("❌ Could not retrieve archived attendance sheets.");
     }
 }
+
 
 
 document.getElementById("viewAttendanceButton").addEventListener("click", listArchivedSheets);
