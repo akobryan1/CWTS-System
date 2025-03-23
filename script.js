@@ -7,7 +7,7 @@ import {
   query,
   where,
   getDocs,
-  doc,
+  doc as docRef,
   updateDoc,
   deleteDoc,
   orderBy,
