@@ -750,19 +750,45 @@ async function listArchivedSheets() {
             return;
         }
 
-        const selectedSheet = prompt("Enter sheet name to view:\n" + archived.join("\n"));
-        if (!selectedSheet) return;
-
-        setCurrentTable(selectedSheet);
-        fetchTable(selectedSheet);
+        openArchivedSheetsPopup(archived);
     } catch (error) {
         console.error("❌ Error listing archived sheets:", error);
         alert("❌ Could not retrieve archived attendance sheets.");
     }
 }
 
+
 document.getElementById("viewAttendanceButton").addEventListener("click", listArchivedSheets);
 
+function openArchivedSheetsPopup(sheetList) {
+    const select = document.getElementById("archived-sheet-select");
+    select.innerHTML = ""; // Clear previous list
+
+    sheetList.forEach(sheetName => {
+        const option = document.createElement("option");
+        option.value = sheetName;
+        option.textContent = sheetName;
+        select.appendChild(option);
+    });
+
+    document.getElementById("archived-sheets-popup").style.display = "block";
+}
+
+function closeArchivedSheetsPopup() {
+    document.getElementById("archived-sheets-popup").style.display = "none";
+}
+
+async function viewSelectedArchivedSheet() {
+    const selected = document.getElementById("archived-sheet-select").value;
+    if (!selected) {
+        alert("❌ Please select a sheet.");
+        return;
+    }
+
+    closeArchivedSheetsPopup();
+    setCurrentTable(selected);
+    fetchTable(selected);
+}
 
 
 
