@@ -22,6 +22,13 @@ import {
   signOut
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
+import {
+  writeBatch,
+  doc as docRef, // rename doc to avoid conflict with 'doc' already imported
+  listCollections
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+
 
 
 // Firebase Configuration
