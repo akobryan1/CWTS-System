@@ -520,14 +520,16 @@ async function deleteRecord(docId) {
     }
 }
 
-function toggleClass() {
+async function toggleClass() {
     const classButton = document.getElementById("classButton");
 
     isClassOngoing = !isClassOngoing;
     classButton.textContent = isClassOngoing ? "End Class" : "Start Class";
-
-    // ✅ Prevent RFID Enter key from triggering this button again
     classButton.blur();
+
+    if (!isClassOngoing) {
+        await endClassAndArchive();
+    }
 
     alert(`📘 Class ${isClassOngoing ? "started" : "ended"}.`);
 }
@@ -729,16 +731,6 @@ async function endClassAndArchive() {
         alert("❌ Failed to archive attendance.");
     }
 }
-
-document.getElementById("classButton").addEventListener("click", async () => {
-    isClassOngoing = !isClassOngoing;
-    const btn = document.getElementById("classButton");
-    btn.textContent = isClassOngoing ? "End Class" : "Start Class";
-
-    if (!isClassOngoing) {
-        await endClassAndArchive();
-    }
-});
 
 async function listArchivedSheets() {
     try {
