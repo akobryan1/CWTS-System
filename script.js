@@ -10,9 +10,11 @@ import {
   doc,
   updateDoc,
   deleteDoc,
-  orderBy,      // ✅ add this
-  limit         // ✅ and this
+  orderBy,
+  limit,
+  writeBatch
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
 
 import {
   getAuth,
@@ -21,13 +23,6 @@ import {
   GoogleAuthProvider,
   signOut
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-
-import {
-  writeBatch,
-  doc as docRef, // rename doc to avoid conflict with 'doc' already imported
-  listCollections
-} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-
 
 
 
