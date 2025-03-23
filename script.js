@@ -626,8 +626,76 @@ document.addEventListener("keydown", function (e) {
     }
 });
 
+import {
+  createUserWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+// Opens the signup popup
+function signupFaculty() {
+    document.getElementById("instructor-signup-popup").style.display = "block";
+}
+
+function closeInstructorSignup() {
+    document.getElementById("instructor-signup-popup").style.display = "none";
+}
+
+// 🔥 Faculty Signup Handler
+async function submitInstructor() {
+    const email = document.getElementById("signup_faculty_email").value.trim();
+    const name = document.getElementById("signup_faculty_name").value.trim();
+    const password = document.getElementById("signup_password").value.trim();
+
+    if (!email || !name || !password) {
+        alert("❌ All fields must be filled out.");
+        return;
+    }
+
+    try {
+        // ✅ 1. Register the user in Firebase Auth
+        const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        console.log("✅ Auth account created:", userCred.user.email);
+
+        // ✅ 2. Find latest faculty_id
+        const facultyRef = collection(db, "faculty");
+        const q = query(facultyRef, orderBy("faculty_id", "desc"), limit(1));
+        const snap = await getDocs(q);
+
+        let newFacultyId = 1;
+        if (!snap.empty) {
+            newFacultyId = parseInt(snap.docs[0].data().faculty_id) + 1;
+        }
+
+        // ✅ 3. Add to Firestore
+        await addDoc(facultyRef, {
+            faculty_id: newFacultyId,
+            gmail: email,
+            full_name: name
+        });
+
+        alert("✅ Faculty successfully registered!");
+        closeInstructorSignup();
+
+        // Clear form inputs
+        document.getElementById("signup_faculty_email").value = "";
+        document.getElementById("signup_faculty_name").value = "";
+        document.getElementById("signup_password").value = "";
+
+        // Refresh table if needed
+        if (currentTable === "faculty") {
+            fetchTable("faculty");
+        }
+
+    } catch (err) {
+        console.error("❌ Error signing up faculty:", err.message);
+        alert("❌ Failed to register instructor. " + err.message);
+    }
+}
 
 
+
+window.signupFaculty = signupFaculty;
+window.closeInstructorSignup = closeInstructorSignup;
+window.submitInstructor = submitInstructor;
 window.toggleClass = toggleClass;
 window.handleRFIDScan = handleRFIDScan;
 window.deleteRecord = deleteRecord;
