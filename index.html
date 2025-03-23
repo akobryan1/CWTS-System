@@ -87,6 +87,10 @@
 <div id="instructor-signup-popup" class="popup-form">
     <div class="popup-content">
         <h2>Instructor Signup</h2>
+
+        <label for="signup_faculty_email">Gmail:</label>
+        <input type="email" id="signup_faculty_email" required>
+
         <label for="signup_faculty_name">Full Name:</label>
         <input type="text" id="signup_faculty_name" required>
 
@@ -94,11 +98,12 @@
         <input type="password" id="signup_password" required>
 
         <div class="form-buttons">
-            <button onclick="submitInstructor()">Signup</button> <!-- ✅ Fixed function name -->
+            <button onclick="submitInstructor()">Signup</button>
             <button onclick="closeInstructorSignup()">Cancel</button>
         </div>
     </div>
 </div>
+
 
 
 <!-- Instructor Login Pop-up -->
