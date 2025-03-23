@@ -15,7 +15,6 @@ import {
   writeBatch
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
-
 import {
   getAuth,
   signInWithPopup,
@@ -716,7 +715,15 @@ async function endClassAndArchive() {
         });
 
         await batch.commit();
+
+        // 🔥 Log the new archive name to a tracker collection
+        await addDoc(collection(db, "attendance_sheets"), {
+          sheet_name: archiveCollectionName,
+          created_at: new Date()
+        });
+
         alert(`✅ Attendance archived to ${archiveCollectionName}`);
+
     } catch (error) {
         console.error("❌ Error archiving attendance:", error);
         alert("❌ Failed to archive attendance.");
