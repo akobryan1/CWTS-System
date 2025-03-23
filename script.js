@@ -641,7 +641,8 @@ function closeInstructorSignup() {
 
 // 🔥 Faculty Signup Handler
 async function submitInstructor() {
-    const email = document.getElementById("signup_faculty_email").value.trim();
+    const emailInput = document.getElementById("signup_faculty_email");
+    const email = emailInput?.value.trim();
 
     if (!email) {
         alert("❌ Gmail is required.");
@@ -649,17 +650,18 @@ async function submitInstructor() {
     }
 
     try {
-        // ✅ Check if already registered
         const facultyRef = collection(db, "faculty");
-        const existing = query(facultyRef, where("gmail", "==", email));
-        const existingSnap = await getDocs(existing);
+
+        // Check if Gmail is already registered
+        const existingQuery = query(facultyRef, where("gmail", "==", email));
+        const existingSnap = await getDocs(existingQuery);
 
         if (!existingSnap.empty) {
             alert("❌ This Gmail is already registered as faculty.");
             return;
         }
 
-        // ✅ Get the next faculty_id
+        // Get latest faculty_id
         const latestQuery = query(facultyRef, orderBy("faculty_id", "desc"), limit(1));
         const latestSnap = await getDocs(latestQuery);
 
@@ -668,27 +670,28 @@ async function submitInstructor() {
             nextFacultyId = parseInt(latestSnap.docs[0].data().faculty_id) + 1;
         }
 
-        // ✅ Register in Firestore only
+        // Save to Firestore (not Firebase Auth)
         await addDoc(facultyRef, {
             faculty_id: nextFacultyId,
             gmail: email
         });
 
         alert("✅ Faculty registered successfully!");
+
+        // Clear input and close popup
+        emailInput.value = "";
         closeInstructorSignup();
 
-        // Clear input
-        document.getElementById("signup_faculty_email").value = "";
-
+        // Refresh if faculty table is open
         if (currentTable === "faculty") {
             fetchTable("faculty");
         }
-
     } catch (error) {
-        console.error("❌ Faculty signup error:", error.message);
-        alert("❌ Failed to register faculty. " + error.message);
+        console.error("❌ Faculty signup error:", error);
+        alert("❌ Failed to register faculty. Check console for more info.");
     }
 }
+
 
 
 
