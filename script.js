@@ -642,50 +642,54 @@ function closeInstructorSignup() {
 // 🔥 Faculty Signup Handler
 async function submitInstructor() {
     const email = document.getElementById("signup_faculty_email").value.trim();
-    const password = document.getElementById("signup_password").value.trim();
 
-    if (!email || !password) {
-        alert("❌ All fields must be filled out.");
+    if (!email) {
+        alert("❌ Gmail is required.");
         return;
     }
 
     try {
-        // ✅ Create user in Firebase Auth
-        const userCred = await createUserWithEmailAndPassword(auth, email, password);
-        console.log("✅ Auth account created:", userCred.user.email);
-
-        // ✅ Find latest faculty_id
+        // ✅ Check if already registered
         const facultyRef = collection(db, "faculty");
-        const q = query(facultyRef, orderBy("faculty_id", "desc"), limit(1));
-        const snap = await getDocs(q);
+        const existing = query(facultyRef, where("gmail", "==", email));
+        const existingSnap = await getDocs(existing);
 
-        let newFacultyId = 1;
-        if (!snap.empty) {
-            newFacultyId = parseInt(snap.docs[0].data().faculty_id) + 1;
+        if (!existingSnap.empty) {
+            alert("❌ This Gmail is already registered as faculty.");
+            return;
         }
 
-        // ✅ Add faculty to Firestore
+        // ✅ Get the next faculty_id
+        const latestQuery = query(facultyRef, orderBy("faculty_id", "desc"), limit(1));
+        const latestSnap = await getDocs(latestQuery);
+
+        let nextFacultyId = 1;
+        if (!latestSnap.empty) {
+            nextFacultyId = parseInt(latestSnap.docs[0].data().faculty_id) + 1;
+        }
+
+        // ✅ Register in Firestore only
         await addDoc(facultyRef, {
-            faculty_id: newFacultyId,
+            faculty_id: nextFacultyId,
             gmail: email
         });
 
-        alert("✅ Faculty successfully registered!");
+        alert("✅ Faculty registered successfully!");
         closeInstructorSignup();
 
-        // Clear fields
+        // Clear input
         document.getElementById("signup_faculty_email").value = "";
-        document.getElementById("signup_password").value = "";
 
         if (currentTable === "faculty") {
             fetchTable("faculty");
         }
 
-    } catch (err) {
-        console.error("❌ Error signing up faculty:", err.message);
-        alert("❌ Failed to register instructor. " + err.message);
+    } catch (error) {
+        console.error("❌ Faculty signup error:", error.message);
+        alert("❌ Failed to register faculty. " + error.message);
     }
 }
+
 
 
 
