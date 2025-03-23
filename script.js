@@ -793,7 +793,10 @@ async function viewSelectedArchivedSheet() {
 }
 
 
-
+window.listArchivedSheets = listArchivedSheets;
+window.openArchivedSheetsPopup = openArchivedSheetsPopup;
+window.closeArchivedSheetsPopup = closeArchivedSheetsPopup;
+window.viewSelectedArchivedSheet = viewSelectedArchivedSheet;
 window.signupFaculty = signupFaculty;
 window.closeInstructorSignup = closeInstructorSignup;
 window.submitInstructor = submitInstructor;
