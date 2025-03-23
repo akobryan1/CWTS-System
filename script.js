@@ -692,6 +692,69 @@ async function submitInstructor() {
     }
 }
 
+async function endClassAndArchive() {
+    try {
+        const snapshot = await getDocs(collection(db, "attendance"));
+        if (snapshot.empty) {
+            alert("⚠️ No attendance data to archive.");
+            return;
+        }
+
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const archiveCollectionName = `attendance_${timestamp}`;
+
+        const archiveRef = collection(db, archiveCollectionName);
+
+        const batch = writeBatch(db);
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const newDocRef = docRef(archiveRef); // Generate new doc ID
+            batch.set(newDocRef, data);
+            batch.delete(doc.ref);
+        });
+
+        await batch.commit();
+        alert(`✅ Attendance archived to ${archiveCollectionName}`);
+    } catch (error) {
+        console.error("❌ Error archiving attendance:", error);
+        alert("❌ Failed to archive attendance.");
+    }
+}
+
+document.getElementById("classButton").addEventListener("click", async () => {
+    isClassOngoing = !isClassOngoing;
+    const btn = document.getElementById("classButton");
+    btn.textContent = isClassOngoing ? "End Class" : "Start Class";
+
+    if (!isClassOngoing) {
+        await endClassAndArchive();
+    }
+});
+
+async function listArchivedSheets() {
+    try {
+        const collections = await listCollections(db);
+        const archived = collections
+            .filter(col => col.id.startsWith("attendance_"))
+            .map(col => col.id);
+
+        if (archived.length === 0) {
+            alert("⚠️ No archived sheets found.");
+            return;
+        }
+
+        const selectedSheet = prompt("Enter sheet name to view:\n" + archived.join("\n"));
+        if (!selectedSheet) return;
+
+        setCurrentTable(selectedSheet);
+        fetchTable(selectedSheet);
+    } catch (error) {
+        console.error("❌ Error listing archived sheets:", error);
+        alert("❌ Could not retrieve archived attendance sheets.");
+    }
+}
+
+document.getElementById("viewAttendanceButton").addEventListener("click", listArchivedSheets);
 
 
 
