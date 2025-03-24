@@ -710,12 +710,13 @@ async function endClassAndArchive() {
         const archiveRef = collection(db, archiveCollectionName);
 
         const batch = writeBatch(db);
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            const newDocRef = docRef(archiveRef); // Generate new doc ID
-            batch.set(newDocRef, data);
-            batch.delete(doc.ref);
+        snapshot.forEach(snapshotDoc => {
+        const data = snapshotDoc.data();
+        const newDocRef = docRef(archiveRef);
+        batch.set(newDocRef, data);
+        batch.delete(snapshotDoc.ref);
         });
+
 
         await batch.commit();
 
