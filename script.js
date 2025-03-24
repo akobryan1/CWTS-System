@@ -763,7 +763,9 @@ async function submitInstructor() {
 
 async function endClassAndArchive() {
     try {
-        const snapshot = await getDocs(collection(db, "attendance"));
+        const attendanceRef = collection(db, "attendance");
+        const snapshot = await getDocs(attendanceRef);
+
         if (snapshot.empty) {
             alert("⚠️ No attendance data to archive.");
             return;
@@ -777,24 +779,39 @@ async function endClassAndArchive() {
 
         snapshot.forEach(snapshotDoc => {
             const data = snapshotDoc.data();
+
+            // 👇 Create new doc ref in archive collection
             const newDocRef = docRef(archiveRef);
+
+            // ✅ Add the data to the archive
             batch.set(newDocRef, data);
-            batch.delete(snapshotDoc.ref);
+
+            // 👇 Explicitly delete from original attendance collection
+            const originalDocRef = doc(db, "attendance", snapshotDoc.id);
+            batch.delete(originalDocRef);
         });
 
+        // ✅ Commit the batch
         await batch.commit();
 
+        // ✅ Record the sheet name
         await addDoc(collection(db, "attendance_sheets"), {
             sheet_name: archiveCollectionName,
             created_at: new Date()
         });
 
-        alert(`✅ Attendance archived to ${archiveCollectionName}`);
+        alert(`✅ Attendance archived and cleared: ${archiveCollectionName}`);
+
+        // ✅ Refresh UI if necessary
+        if (currentTable === "attendance") {
+            fetchTable("attendance");
+        }
     } catch (error) {
         console.error("❌ Error archiving attendance:", error);
         alert("❌ Failed to archive attendance.");
     }
 }
+
 
 async function listArchivedSheets() {
     try {
