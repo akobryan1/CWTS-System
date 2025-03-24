@@ -353,21 +353,86 @@ function setCurrentTable(tableName) {
 
 async function fetchTable(collectionName) {
     try {
-        const ref = collection(db, collectionName);
-        const snapshot = await getDocs(ref);
+        const isArchived = collectionName.startsWith("attendance_");
 
-        const data = [];
-        snapshot.forEach(doc => {
-            data.push({ id: doc.id, ...doc.data() });
+        const ref = isArchived
+            ? collection(db, "archived_attendance", collectionName, "records")
+            : collection(db, collectionName);
+
+        const querySnapshot = await getDocs(ref);
+
+        const headerRow = document.getElementById("table-header");
+        const tableBody = document.getElementById("table-body");
+        headerRow.innerHTML = "";
+        tableBody.innerHTML = "";
+
+        if (querySnapshot.empty) {
+            const row = document.createElement("tr");
+            const td = document.createElement("td");
+            td.colSpan = 10;
+            td.textContent = "No records found.";
+            row.appendChild(td);
+            tableBody.appendChild(row);
+            return;
+        }
+
+        const firstDoc = querySnapshot.docs[0].data();
+        const headers = Object.keys(firstDoc);
+
+        // Header
+        headers.forEach(key => {
+            const th = document.createElement("th");
+            th.textContent = key;
+            headerRow.appendChild(th);
         });
 
-        allRows = data; // Store for search functionality
-        renderTable(data);
+        // Add "Actions" column
+        const th = document.createElement("th");
+        th.textContent = "Actions";
+        headerRow.appendChild(th);
+
+        querySnapshot.forEach(docSnap => {
+            const row = docSnap.data();
+            const tr = document.createElement("tr");
+
+            headers.forEach(key => {
+                const td = document.createElement("td");
+                td.textContent = row[key];
+                tr.appendChild(td);
+            });
+
+            // Actions column (Update/Delete)
+            const actionTd = document.createElement("td");
+
+            const updateBtn = document.createElement("button");
+            updateBtn.textContent = "Update";
+            updateBtn.className = "update-btn";
+            updateBtn.onclick = () => {
+                updateBtn.classList.add("clicked");
+                openUpdateForm(docSnap.id, row);
+                setTimeout(() => updateBtn.classList.remove("clicked"), 200);
+            };
+            actionTd.appendChild(updateBtn);
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Delete";
+            deleteBtn.className = "delete-btn";
+            deleteBtn.onclick = () => {
+                deleteBtn.classList.add("clicked");
+                deleteRecord(docSnap.id);
+                setTimeout(() => deleteBtn.classList.remove("clicked"), 200);
+            };
+            actionTd.appendChild(deleteBtn);
+
+            tr.appendChild(actionTd);
+            tableBody.appendChild(tr);
+        });
     } catch (error) {
-        console.error("❌ Error fetching data:", error);
-        alert("❌ Failed to fetch data. Check Firestore rules and collection name.");
+        console.error("❌ Error fetching table data:", error);
+        alert("❌ Failed to load table data.");
     }
 }
+
 
 function renderTable(data) {
     const header = document.getElementById("table-header");
@@ -707,27 +772,24 @@ async function endClassAndArchive() {
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
         const archiveCollectionName = `attendance_${timestamp}`;
 
-        const archiveRef = collection(db, archiveCollectionName);
-
+        const archiveRef = collection(db, "archived_attendance", archiveCollectionName, "records");
         const batch = writeBatch(db);
-        snapshot.forEach(snapshotDoc => {
-        const data = snapshotDoc.data();
-        const newDocRef = docRef(archiveRef);
-        batch.set(newDocRef, data);
-        batch.delete(snapshotDoc.ref);
-        });
 
+        snapshot.forEach(snapshotDoc => {
+            const data = snapshotDoc.data();
+            const newDocRef = docRef(archiveRef);
+            batch.set(newDocRef, data);
+            batch.delete(snapshotDoc.ref);
+        });
 
         await batch.commit();
 
-        // 🔥 Log the new archive name to a tracker collection
         await addDoc(collection(db, "attendance_sheets"), {
-          sheet_name: archiveCollectionName,
-          created_at: new Date()
+            sheet_name: archiveCollectionName,
+            created_at: new Date()
         });
 
         alert(`✅ Attendance archived to ${archiveCollectionName}`);
-
     } catch (error) {
         console.error("❌ Error archiving attendance:", error);
         alert("❌ Failed to archive attendance.");
