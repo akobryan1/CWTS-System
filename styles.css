@@ -1,192 +1,19 @@
-/* General Styling */
 body {
     display: flex;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #181818; /* Dark mode background */
-    color: #ffffff; /* Light text */
+    background-color: #f4f4f4;
 }
 
-/* Dashboard Panel */
 .dashboard {
     width: 250px;
-    background: #121212; /* Darker side panel */
+    background: #2c3e50;
     color: white;
     padding: 20px;
     height: 100vh;
-    box-shadow: 2px 0px 5px rgba(255, 255, 255, 0.1);
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
 }
-
-/* Dashboard Buttons */
-.dashboard button {
-    display: block;
-    width: 100%;
-    margin: 10px 0;
-    padding: 12px;
-    background: #333333;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
-    transition: background 0.3s;
-}
-
-.dashboard button:hover {
-    background: #444444;
-}
-
-/* Data Table Styling */
-#data-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background: #222222;
-    color: white;
-    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
-}
-
-#data-table th, #data-table td {
-    border: 1px solid #444;
-    padding: 10px;
-    text-align: left;
-}
-
-#data-table th {
-    background: #333333;
-    color: white;
-}
-
-#data-table tr:nth-child(even) {
-    background-color: #1e1e1e;
-}
-
-#data-table tr:hover {
-    background-color: #2c2c2c;
-}
-
-/* Controls Styling */
-.controls button {
-    margin: 0;
-    padding: 10px;
-    background: #444444; /* Dark gray */
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background 0.3s;
-}
-
-.controls button:hover {
-    background: #555555;
-}
-
-/* View Attendance Sheets Button */
-#viewAttendanceButton {
-    background: #444444;
-    color: white;
-    padding: 12px 16px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: background 0.3s;
-}
-
-#viewAttendanceButton:hover {
-    background: #555555;
-}
-
-/* Popup Forms */
-.popup-form {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    max-width: 400px;
-    background-color: #222222;
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
-    z-index: 1000;
-}
-
-/* Update and Delete Buttons */
-.update-btn {
-    background: #1E88E5;
-    color: white;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.update-btn:hover {
-    background: #1565C0;
-}
-
-.delete-btn {
-    background: #E53935;
-    color: white;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.3s;
-    margin-left: 5px;
-}
-
-.delete-btn:hover {
-    background: #C62828;
-}
-
-/* Toggle Dark Mode Button */
-#toggle-theme {
-    background: #444;
-    color: white;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background 0.3s;
-}
-
-#toggle-theme:hover {
-    background: #555;
-}
-
-/* Dark Mode Support */
-.dark-mode {
-    background-color: #181818;
-    color: white;
-}
-
-.dark-mode .dashboard {
-    background: #121212;
-}
-
-.dark-mode #data-table {
-    background: #222;
-    color: white;
-}
-
-.dark-mode .popup-form {
-    background: #222;
-}
-
-.dark-mode .dashboard button {
-    background: #333;
-}
-
-.dark-mode .dashboard button:hover {
-    background: #444;
-}
-
 
 .dashboard.collapsed {
     display: none;
@@ -203,9 +30,23 @@ body {
     text-align: center;
 }
 
+.dashboard button {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 12px;
+    background: #34495e;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
 
-
-
+.dashboard button:hover {
+    background: #1abc9c;
+}
 
 .toggle-btn {
     position: fixed;
@@ -226,6 +67,13 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 18px;
+}
+
+#data-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+#data-table tr:hover {
+    background-color: #ddd;
 }
 
 
@@ -259,6 +107,25 @@ body {
     display: inline-block;
     width: auto;
     border-radius: 5px;
+}
+
+#data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#data-table th, #data-table td {
+    border: 1px solid #bdc3c7;
+    padding: 10px;
+    text-align: left;
+}
+
+#data-table th {
+    background: #34495e;
+    color: white;
 }
 
 #data-table td button {
@@ -356,8 +223,22 @@ input[type="text"] {
     }
 }
 
-
-
+/* Popup Form Styles */
+/* 🔹 General Popup Styling */
+.popup-form {
+    display: none; /* Initially hidden */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px; /* Ensures the form is not too wide */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
 
 /* 🔹 Dark Background Overlay */
 .popup-form::before {
@@ -367,7 +248,7 @@ input[type="text"] {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: white;
     z-index: -1;
 }
 
