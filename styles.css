@@ -264,6 +264,7 @@ input[type="text"] {
     font-weight: bold;
     margin: 10px 0 5px;
     text-align: left;
+    color: black;
 }
 
 .popup-form input {
@@ -272,6 +273,15 @@ input[type="text"] {
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
+    background-color: white;
+}
+
+.popup-form form-buttons {
+     padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
 }
 
 /* 🔹 Form Buttons */
