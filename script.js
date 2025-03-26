@@ -577,8 +577,10 @@ async function deleteRecord(docId) {
     if (!confirm("Are you sure you want to delete this record?")) return;
 
     try {
-        const ref = doc(db, currentTable, docId);
+        // ✅ FIX: Ensure Firestore document reference uses `docRef`
+        const ref = docRef(db, currentTable, docId);
         await deleteDoc(ref);
+        
         alert("🗑️ Record deleted successfully.");
         fetchTable(currentTable); // Refresh data
     } catch (error) {
