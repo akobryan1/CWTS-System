@@ -561,7 +561,7 @@ async function submitUpdate() {
     }
 
     try {
-        const ref = doc(db, currentTable, currentUpdateDocId);
+        const ref = docRef(db, currentTable, currentUpdateDocId);  // ✅ Use `docRef` instead of `doc`
         await updateDoc(ref, updateData);
         alert("✅ Record updated successfully.");
         closeUpdateForm();
@@ -571,6 +571,7 @@ async function submitUpdate() {
         alert("❌ Failed to update record. Check the console for details.");
     }
 }
+
 
 async function deleteRecord(docId) {
     if (!confirm("Are you sure you want to delete this record?")) return;
