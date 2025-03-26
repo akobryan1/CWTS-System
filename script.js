@@ -778,27 +778,25 @@ async function endClassAndArchive() {
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
         const archiveCollectionName = `attendance_${timestamp}`;
 
+        // ✅ FIX: Ensure we reference the correct collection structure
         const archiveRef = collection(db, "archived_attendance", archiveCollectionName, "records");
         const batch = writeBatch(db);
 
         snapshot.forEach(snapshotDoc => {
             const data = snapshotDoc.data();
 
-            // 👇 Create new doc ref in archive collection
+            // ✅ FIX: Ensure doc reference is correct
             const newDocRef = docRef(archiveRef);
-
-            // ✅ Add the data to the archive
             batch.set(newDocRef, data);
 
-            // 👇 Explicitly delete from original attendance collection
-            const originalDocRef = doc(db, "attendance", snapshotDoc.id);
+            // ✅ Explicitly delete from original attendance collection
+            const originalDocRef = docRef(db, "attendance", snapshotDoc.id);
             batch.delete(originalDocRef);
         });
 
-        // ✅ Commit the batch
         await batch.commit();
 
-        // ✅ Record the sheet name
+        // ✅ Log the archived sheet into attendance_sheets collection
         await addDoc(collection(db, "attendance_sheets"), {
             sheet_name: archiveCollectionName,
             created_at: new Date()
@@ -806,13 +804,14 @@ async function endClassAndArchive() {
 
         alert(`✅ Attendance archived and cleared: ${archiveCollectionName}`);
 
-        // ✅ Refresh UI if necessary
+        // ✅ Refresh UI to reflect the updated attendance
         if (currentTable === "attendance") {
             fetchTable("attendance");
         }
+
     } catch (error) {
         console.error("❌ Error archiving attendance:", error);
-        alert("❌ Failed to archive attendance.");
+        alert("❌ Failed to archive attendance. See console for details.");
     }
 }
 
