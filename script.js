@@ -609,9 +609,9 @@ async function handleRFIDScan(rfid) {
 
     try {
         const studentsRef = collection(db, "students");
-       
 
-        const q = query(studentsRef, where("rfid", "==", rfid));
+        // ✅ Ensure RFID is a string before querying Firestore
+        const q = query(studentsRef, where("rfid", "==", rfid.toString()));
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
@@ -677,6 +677,7 @@ async function handleRFIDScan(rfid) {
         alert("❌ An error occurred while processing RFID.");
     }
 }
+
 
 // ✅ RFID scan handler: build input, trigger on Enter
 document.addEventListener("keydown", function (e) {
