@@ -365,6 +365,7 @@ async function fetchTable(collectionName) {
         const tableBody = document.getElementById("table-body");
         headerRow.innerHTML = "";
         tableBody.innerHTML = "";
+        allRows = []; // ✅ Reset the search dataset
 
         if (querySnapshot.empty) {
             const row = document.createElement("tr");
@@ -426,6 +427,9 @@ async function fetchTable(collectionName) {
 
             tr.appendChild(actionTd);
             tableBody.appendChild(tr);
+
+            // ✅ Cache for searching
+            allRows.push({ ...row, id: docSnap.id });
         });
     } catch (error) {
         console.error("❌ Error fetching table data:", error);
