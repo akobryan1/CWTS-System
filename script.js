@@ -442,30 +442,33 @@ function renderTable(data) {
     const header = document.getElementById("table-header");
     const body = document.getElementById("table-body");
 
-    // Clear existing content
     header.innerHTML = "";
     body.innerHTML = "";
 
     if (data.length === 0) {
-        header.innerHTML = "<th>No data available</th>";
+        const row = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 10;
+        td.textContent = "No data available";
+        row.appendChild(td);
+        body.appendChild(row);
         return;
     }
 
     const columns = Object.keys(data[0]).filter(col => col !== "id");
 
-    // Render table header
+    // Render header
     columns.forEach(col => {
         const th = document.createElement("th");
-        th.textContent = col.toUpperCase();
+        th.textContent = col;
         header.appendChild(th);
     });
 
-    // Add "Actions" header
+    // Add actions header
     const actionTh = document.createElement("th");
     actionTh.textContent = "Actions";
     header.appendChild(actionTh);
 
-    // Render table rows
     data.forEach(row => {
         const tr = document.createElement("tr");
 
@@ -475,16 +478,13 @@ function renderTable(data) {
             tr.appendChild(td);
         });
 
-        // Actions (Update + Delete)
         const actionTd = document.createElement("td");
 
-        // 🔁 Update button
         const updateBtn = document.createElement("button");
         updateBtn.textContent = "Update";
         updateBtn.onclick = () => openUpdateForm(row.id, row);
         actionTd.appendChild(updateBtn);
 
-        // 🗑️ Delete button
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
         deleteBtn.style.marginLeft = "8px";
@@ -499,25 +499,19 @@ function renderTable(data) {
 
 
 
+
 function performSearch() {
     const query = document.getElementById("search-bar").value.toLowerCase();
+
     const filtered = allRows.filter(row =>
         Object.values(row).some(value =>
-            String(value).toLowerCase().includes(query)
+            value && String(value).toLowerCase().includes(query)
         )
     );
+
     renderTable(filtered);
 }
 
-// 🔄 TRACK CURRENT DOCUMENT FOR UPDATE
-let currentUpdateDocId = null;
-
-// 🔁 Table schema definitions for each collection
-const tableSchemas = {
-    students: ["student_id", "rfid", "first_name", "last_name", "faculty_id"],
-    faculty: ["faculty_id", "gmail"],
-    attendance: ["attendance_id", "student_id", "reader_id", "status", "timestamp"]
-};
 
 function openUpdateForm(docId, data) {
     currentUpdateDocId = docId;
