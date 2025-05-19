@@ -515,6 +515,14 @@ function performSearch() {
 }
 
 
+
+// 🗂️ Table schema definitions
+const tableSchemas = {
+    students: ["student_id", "rfid", "first_name", "last_name", "faculty_id"],
+    faculty: ["faculty_id", "gmail"],
+    attendance: ["attendance_id", "student_id", "reader_id", "status", "timestamp"]
+};
+
 function openUpdateForm(docId, data) {
     currentUpdateDocId = docId;
     const form = document.getElementById("update-form");
