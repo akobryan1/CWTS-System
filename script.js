@@ -345,7 +345,9 @@ function enforceNumericInput(event) {
 }
 
 let currentTable = ""; // holds the current collection name
-let allRows = [];       // holds the full dataset for searching
+let allRows = [];
+let currentUpdateDocId = null;  // ✅ Fix: Declare this variable globally to prevent ReferenceError
+       // holds the full dataset for searching
 
 function setCurrentTable(tableName) {
     currentTable = tableName;
